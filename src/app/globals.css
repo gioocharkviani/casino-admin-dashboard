@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+body {
+  background:theme('colors.lightBg');
+  overflow-x: hidden;
+}
+.dark body {
+  background: theme('colors.darkBg');
+}
+
+input[type="checkbox"] {
+  background-color: transparent;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+.dark ::-webkit-scrollbar-track {
+  background: theme('colors.darkBg');
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+.sidebar-content::-webkit-scrollbar {
+  width: 2px;
+}
+
+/*CHECKBOX*/
+.toggle-container {
+  display: flex;
+}
+
+.toggle-container input {
+  display: none;
+}
+
+.toggle-btn {
+  display: block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+  border-radius: 100px;
+  background-color: rgb(224, 224, 224);
+  transition: all ease-in-out 0.1s;
+  position: relative;
+}
+
+.toggle-container input:checked + .toggle-btn {
+  background-color: rgb(59 130 246);
+}
+
+.toggle-btn::before {
+  display: block;
+  position: absolute;
+  margin: 2px;
+  content: '';
+  background-color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 100%;
+  transition: all ease-in-out 0.1s;
+}
+
+.toggle-container input:checked + .toggle-btn::before {
+  transform: translateX(100%);
+}
+/*CHECKBOX*/
+
+ .dark-mode-switch {
+  width: 32px;
+  position: relative;
+  height: 32px;
+ }
+ .dark-mode-input {
+  display: none;
+ }
+ .dark-mode-label {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ }
+
+
+ /*=========DATA TABLES ==========*/
+.table-container::-webkit-scrollbar{
+  height: 5px;
+}
+
+.table-container table thead tr{
+ border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+.table-container table tbody tr{
+ border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+.table-container table thead tr th {
+font-weight: 600;
+ padding: 8px;
+}
+
+.table-container table tbody tr td {
+ padding: 8px;
+ /* New styles for overflow handling */
+ max-width: 150px; /* Adjust this value based on your design */
+ white-space: nowrap;
+ font-weight: 400;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
+
+.table-container table {
+ border-collapse: collapse;
+}
+
+.table-container table tbody tr:last-child td {
+ border-bottom: none;
+}
+
+.dark table tbody tr   {
+ border-color: theme('colors.darkBg');
+}
+
+.dark table thead tr   {
+ border-color: theme('colors.darkBg');
+}
+
+.dark .table-container {
+ border-color: theme('colors.darkBg');
+}
+/*=========DATA TABLES ==========*/
+
+
+/*=========CHECKBOX1 ==========*/
+.checkbox1con input:checked + .checkbox1label {
+  background-color: #4f46e5;
+  color: rgb(255, 255, 255);
+  transition: all .2s ease-in-out;
+}
+.checkbox1con .checkbox1label {
+  background-color:  white;
+  color: #000000;
+}
+/*=========CHECKBOX1 ==========*/
+
+.headerNavigate::-webkit-scrollbar {
+height: 1px;
+}
