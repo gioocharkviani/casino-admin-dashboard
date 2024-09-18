@@ -59,7 +59,6 @@ export const userLogin = async (body: object) => {
         return getUserAcess;
       }
     }
-    console.log('response')
     return response;
   } catch (error) {
     console.log('catch block')
