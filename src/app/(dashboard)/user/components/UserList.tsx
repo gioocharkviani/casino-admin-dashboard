@@ -28,7 +28,7 @@ const UserList = () => {
   const tableOptions = {
     search:true,
     select:true,
-    filter:true,
+    filter:false,
     saveData:true,
     pagination:true,
     sort:true,
@@ -41,7 +41,7 @@ const UserList = () => {
       link:'/'
     },
     actions:{
-      active:true,
+      active:false,
       edit:true,
       remove:true,
     },

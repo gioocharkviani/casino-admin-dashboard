@@ -36,10 +36,8 @@ const useTableStore = create<TableState>((set) => ({
   
   // Function implementations
   setData: (data) => {
-    const visibleColumns = data?.length > 0 ? Object.keys(data[0]) : [];
     set({
       data,
-      visibleColumns
     });
   },
 
@@ -50,7 +48,6 @@ const useTableStore = create<TableState>((set) => ({
   setMaxPage: (maxPage) => set({ maxPage }),
   setTotalItems: (totalItems) => set({ totalItems }),
   setVisibleColumns: (columns) => set({ visibleColumns: columns }),
-
   // Function to update selected rows (toggle or set new array)
   setSelectedRows: (ids) => set({ selectedRows: ids }),
 }));

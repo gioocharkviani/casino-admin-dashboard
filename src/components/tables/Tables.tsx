@@ -18,7 +18,7 @@ interface TableProps {
 }
 
 const Tables = ({ options }: TableProps) => {
-  const { visibleColumns,data, sortBy, totalItems, sortDirection, setSort, search, maxPage, setSearch, setPage, page, selectedRows, setSelectedRows , setVisibleColumns  } = useTableStore();
+  const { visibleColumns,data, sortBy, totalItems, sortDirection, setPerPage, perPage, setSort, search, maxPage, setSearch, setPage, page, selectedRows, setSelectedRows , setVisibleColumns  } = useTableStore();
   const { setOpen, setChildren, setTitle } = useModalStore();
   const [allSelected, setAllSelected] = useState(false);
 
@@ -26,62 +26,88 @@ const Tables = ({ options }: TableProps) => {
   // Columns && rows
   const columns = data?.length > 0 ? Object.keys(data[0]) : [];
   const rowsData = data?.length > 0 ? data : [];
-  // Columns && rows
 
+  const colMap = visibleColumns.length === 0 ? columns : visibleColumns;
+  // Columns && rows
   
+
   
   // SETTINGS
-  const [settingSaveData , SetSettingSaveData] = useState({
+  const storedSettings = localStorage.getItem(options.settings.title);
 
-  })
-
-  const saveSettingsData = ()=>{
-    const settingsData = localStorage.setItem(options.settings.title , JSON.stringify(settingSaveData))
-    return settingsData;
-  }
-
-  const setVisibleCol = ({e ,col}:any) => {
-    if(e.target.checked){
-      setVisibleColumns([...visibleColumns ,col])
-    }else{
-      const filterItems = visibleColumns.filter((c)=> c !== col)
-      setVisibleColumns(filterItems)
-    }
+  const saveSettingsData = () => {
+    const settingsData = {
+      visibleColumns,
+      perPage,
+    };
+    localStorage.setItem(options.settings.title, JSON.stringify(settingsData));
   };
-//coment for change user
+
+  const setVisibleCol = ({ e, col }: any) => {
+    let updatedVisibleColumns;
+    if (e.target.checked) {
+      updatedVisibleColumns = [...visibleColumns, col].sort(
+        (a, b) => columns.indexOf(a) - columns.indexOf(b)
+      );
+    } else {
+      updatedVisibleColumns = visibleColumns.filter((c) => c !== col);
+    }
+    setVisibleColumns(updatedVisibleColumns);
+  };
+  
+
   let childElement = (
     <div className="flex flex-col w-full gap-4">
       <h2>Show or hide columns</h2>
       <form className="flex flex-wrap w-full gap-2">
-        {columns.map((col:any) => (
+        {columns.map((col: any) => (
           <Checkbox1
             key={col}
             id={col}
             label={col}
-            checked={visibleColumns.includes(col)} 
-            onChange={(e) => setVisibleCol({e, col})}
-          />
+            checked={colMap.includes(col)}
+            onChange={(e) => setVisibleCol({ e, col })}
+            />
         ))}
       </form>
       <h2>Per page</h2>
-      <Button onClick={()=>saveSettingsData()}>
+      <Input
+        type="number"
+        value={perPage.toString()}
+        onChange={(e) => setPerPage(Number(e.target.value))}
+      />
+      <Button onClick={() => saveSettingsData()}>
         <IoSave /> Save
       </Button>
     </div>
   );
+  
+  const setting = () => {
+    setOpen();
+    setTitle('Table settings');
+    setChildren(childElement);
+  };
+  
+  // Retrieve settings from localStorage
+  useEffect(() => {
+    if (storedSettings) {
+      const parsedSettings = JSON.parse(storedSettings);
+      if (parsedSettings.visibleColumns) {
+        setVisibleColumns(parsedSettings.visibleColumns);
+      }
+      if (parsedSettings.perPage) {
+        setPerPage(parsedSettings.perPage)
+      }
+    }else{
+      setVisibleColumns(columns)
+    }
+  }, []);
 
-
-const setting = () => {
-  setOpen();
-  setTitle('Table settings');
-  setChildren(childElement);
-};
-
-useEffect(()=>{
-  setChildren(childElement);
-},[visibleColumns])
-
-// SETTINGS
+  
+  useEffect(() => {
+    setChildren(childElement);
+  }, [visibleColumns, perPage ]);
+  // SETTINGS
 
 
 // FilterModal
@@ -90,6 +116,12 @@ const filterModal = () => {
   setChildren(<div>filter function</div>);
 };
 
+
+ // Save data as CSV and trigger download
+ const saveAs = (type:any) => {
+ const fileName = 'data_table.'+ type;
+
+};
 
   // Sort function
   const handleSort = (column: any) => {
@@ -158,6 +190,8 @@ const filterModal = () => {
     }
   }, [selectedRows, rowsData]);
 
+
+
   return (
     <div>
       <div className="flex flex-col">
@@ -193,7 +227,7 @@ const filterModal = () => {
 
             {/* SAVE BUTTON */}
             {options.saveData && (
-              <Button>
+              <Button onClick={()=> saveAs('sadsa')}>
                 <IoSave />
               </Button>
             )}
@@ -214,7 +248,7 @@ const filterModal = () => {
           </div>
         ) : (
           <div className="overflow-x-auto pb-5 mt-5 border rounded-md shadow-lg table-container">
-            <table className="min-w-full w-max text-left table-auto border-collapse">
+            <table id="data-table" className="min-w-full w-max text-left table-auto border-collapse">
               {/* TABLE HEAD */}
               <thead>
                 <tr className="text-sm font-light">
@@ -227,7 +261,7 @@ const filterModal = () => {
                   {/* END CHECKBOX FOR SELECT ALL */}
 
                   {/* MAP ALL COLUMNS */}
-                  {columns.map((i) => (
+                  {colMap.map((i) => (
                     <th key={i}>
                       <button disabled={!options.sort} onClick={() => handleSort(i)}>
                         <div className="flex items-center w-full gap-4 justify-between">
@@ -269,7 +303,7 @@ const filterModal = () => {
                     {/* END CHECKBOX FOR SELECT EACH ROW */}
 
                         {/* MAP ROW DATA */}
-                        {columns.map((col: string) => (
+                        {colMap.map((col: string) => (
                           <td className="text-sm" key={col}>
                             {col === 'roles' && row[col] && row[col].length > 0 ? (
                               // Check if the column is 'roles' and roles array is not empty
