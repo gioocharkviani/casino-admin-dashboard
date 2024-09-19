@@ -38,12 +38,12 @@ const UserList = () => {
     },
     create:{
       active:true,
-      link:'/'
+      link:'/user/create'
     },
     actions:{
       active:false,
-      edit:true,
-      remove:true,
+      edit:'/user/edit',
+      remove:false,
     },
   }
 

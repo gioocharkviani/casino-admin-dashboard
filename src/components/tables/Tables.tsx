@@ -8,10 +8,12 @@ import Link1 from '../ui/Link1';
 import Button from '../ui/Button';
 import { IoFilter, IoSave } from 'react-icons/io5';
 import Input from '../ui/Input';
+import * as XLSX from 'xlsx';
 
 import useTableStore from '@/store/useTableStore';
 import useModalStore from '@/store/useModalStore';
 import Checkbox1 from '../ui/Checkbox1';
+import Link from 'next/link';
 
 interface TableProps {
   options: object | any,
@@ -29,11 +31,11 @@ const Tables = ({ options }: TableProps) => {
   const colMap = visibleColumns.length === 0 ? columns : visibleColumns;
   // Columns && rows
   
-
+  useEffect(()=>{
+    setPage(1)
+  },[perPage])
   
   // SETTINGS
-  const storedSettings = localStorage.getItem(options.settings.title);
-
   const saveSettingsData = () => {
     const settingsData = {
       visibleColumns,
@@ -76,7 +78,7 @@ const Tables = ({ options }: TableProps) => {
         value={perPage.toString()}
         onChange={(e) => setPerPage(Number(e.target.value))}
         min={1}
-      />
+        />
       <Button onClick={() => saveSettingsData()}>
         <IoSave /> Save
       </Button>
@@ -91,6 +93,7 @@ const Tables = ({ options }: TableProps) => {
   
   // Retrieve settings from localStorage
   useEffect(() => {
+    const storedSettings = localStorage.getItem(options.settings.title);
     if (storedSettings) {
       const parsedSettings = JSON.parse(storedSettings);
       if (parsedSettings.visibleColumns) {
@@ -120,10 +123,26 @@ const filterModal = () => {
 
 
  // SAVE DATA
- const saveAs = (type:any) => {
-   const fileName = 'data_table.'+ type;
-   
-  };
+ const saveAs = () => {
+  // Filter only selected rows
+  const selectedRowsData = rowsData.filter((row: any) => selectedRows.includes(row.id));
+  // Map the data to match the column structure
+  const exportData = selectedRowsData.map((row: any) => {
+    const rowData: any = {};
+    colMap.forEach((col: string) => {
+      rowData[col] = row[col] !== null && row[col] !== undefined ? row[col] : '';
+    });
+    return rowData;
+  });
+
+  // Create a worksheet
+  const ws = XLSX.utils.json_to_sheet(exportData, { header: colMap });
+  // Create a workbook and append the worksheet
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'SelectedRows');
+  // Generate Excel file and trigger download
+  XLSX.writeFile(wb, 'selected_rows.xlsx');
+ }
   // SAVE DATA
 
   // SORT FUNCTION
@@ -234,7 +253,7 @@ const filterModal = () => {
 
             {/* SAVE BUTTON */}
             {options.saveData && (
-              <Button onClick={()=> saveAs('sadsa')}>
+              <Button disable={selectedRows.length > 0} onClick={()=> saveAs()}>
                 <IoSave />
               </Button>
             )}
@@ -331,10 +350,12 @@ const filterModal = () => {
                       <td>
                         <div className="w-full relative flex gap-2 justify-end items-center h-full">
                           {options.actions.edit && (
-                            <FaRegEdit
-                              title="edit"
-                              className="cursor-pointer hover:text-indigo-500"
-                            />
+                            <Link href={`${options.actions.edit}?id=${row.id}`}>
+                              <FaRegEdit
+                                title="edit"
+                                className="cursor-pointer hover:text-indigo-500"
+                                />
+                            </Link>
                           )}
                           {options.actions.remove && (
                             <AiOutlineDelete
