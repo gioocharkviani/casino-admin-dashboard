@@ -3,7 +3,7 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { FaRegEdit } from 'react-icons/fa';
 import { IoIosSettings, IoMdAdd } from 'react-icons/io';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
-import { HiSortAscending, HiSortDescending } from 'react-icons/hi'; // Import sort icons
+import { HiSortAscending, HiSortDescending } from 'react-icons/hi'; 
 import Link1 from '../ui/Link1';
 import Button from '../ui/Button';
 import { IoFilter, IoSave } from 'react-icons/io5';
@@ -26,7 +26,6 @@ const Tables = ({ options }: TableProps) => {
   // Columns && rows
   const columns = data?.length > 0 ? Object.keys(data[0]) : [];
   const rowsData = data?.length > 0 ? data : [];
-
   const colMap = visibleColumns.length === 0 ? columns : visibleColumns;
   // Columns && rows
   
@@ -50,7 +49,8 @@ const Tables = ({ options }: TableProps) => {
         (a, b) => columns.indexOf(a) - columns.indexOf(b)
       );
     } else {
-      updatedVisibleColumns = visibleColumns.filter((c) => c !== col);
+      console.log(visibleColumns)
+      updatedVisibleColumns = colMap.filter((c) => c !== col);
     }
     setVisibleColumns(updatedVisibleColumns);
   };
@@ -75,6 +75,7 @@ const Tables = ({ options }: TableProps) => {
         type="number"
         value={perPage.toString()}
         onChange={(e) => setPerPage(Number(e.target.value))}
+        min={1}
       />
       <Button onClick={() => saveSettingsData()}>
         <IoSave /> Save
@@ -110,20 +111,22 @@ const Tables = ({ options }: TableProps) => {
   // SETTINGS
 
 
-// FilterModal
+// FILTER
 const filterModal = () => {
   setOpen();
   setChildren(<div>filter function</div>);
 };
+// FILTER
 
 
- // Save data as CSV and trigger download
+ // SAVE DATA
  const saveAs = (type:any) => {
- const fileName = 'data_table.'+ type;
+   const fileName = 'data_table.'+ type;
+   
+  };
+  // SAVE DATA
 
-};
-
-  // Sort function
+  // SORT FUNCTION
   const handleSort = (column: any) => {
     if (sortBy === column) {
       setSort(column, sortDirection === 'asc' ? 'desc' : 'asc');
@@ -131,7 +134,7 @@ const filterModal = () => {
       setSort(column, 'asc');
     }
   };
-
+  
   // Render sort icon
   const renderSortIcon = (column: string) => {
     if (sortDirection === 'asc' && sortBy === column) {
@@ -140,12 +143,13 @@ const filterModal = () => {
       return <HiSortAscending />;
     }
   };
+  // SORT FUNCTION
 
-  // Handle search input
+  // SEARCH
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-
+  
   // Highlight search term
   const highlightText = (text: string, searchTerm: string) => {
     if (!searchTerm) return text;
@@ -160,8 +164,10 @@ const filterModal = () => {
       )
     );
   };
+  // SEARCH
 
-  // Select All handler
+
+  // SELECT 
   const handleSelectAll = () => {
     if (allSelected) {
       setSelectedRows([]);
@@ -181,6 +187,7 @@ const filterModal = () => {
       setSelectedRows([...selectedRows, id]);
     }
   };
+  // SELECT
 
   useEffect(() => {
     if (selectedRows.length === rowsData.length && rowsData.length > 0) {
@@ -263,7 +270,7 @@ const filterModal = () => {
                   {/* MAP ALL COLUMNS */}
                   {colMap.map((i) => (
                     <th key={i}>
-                      <button disabled={!options.sort} onClick={() => handleSort(i)}>
+                      <button className='w-full' disabled={!options.sort} onClick={() => handleSort(i)}>
                         <div className="flex items-center w-full gap-4 justify-between">
                           <span>{i}</span>
                           {/* Check if this is the currently sorted column */}
@@ -355,7 +362,7 @@ const filterModal = () => {
             <span className="text-sm">
               {page} / {maxPage}
             </span>
-            <button disabled={page === maxPage} onClick={() => setPage(page + 1)} className="font-bold text-lg p-1">
+            <button disabled={page === maxPage || maxPage === 0} onClick={() => setPage(page + 1)} className="font-bold text-lg p-1">
               <MdKeyboardArrowRight />
             </button>
               <span className="text-sm">Total Items: {totalItems || 0}</span>

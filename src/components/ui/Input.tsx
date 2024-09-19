@@ -7,9 +7,11 @@ interface InputProps {
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string | null;
+    min?:number,
+    max?:number,
 }
 
-const Input: React.FC<InputProps> = ({ type, label, placeholder, value, onChange, error }) => {
+const Input: React.FC<InputProps> = ({min, max, type, label, placeholder, value, onChange, error }) => {
     return (
         <div className="relative w-full">
             {label && (
@@ -27,6 +29,8 @@ const Input: React.FC<InputProps> = ({ type, label, placeholder, value, onChange
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                min={min}
+                max={max}
                 className={`w-full px-3 py-2 border dark:text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm
                 ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
             />

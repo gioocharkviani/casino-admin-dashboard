@@ -120,14 +120,16 @@ input[type="checkbox"] {
 }
 
 .table-container table thead tr th {
-font-weight: 600;
- padding: 8px;
+font-weight: 700;
+max-width: 300px;
+min-width: max-content;
+padding: 8px;
 }
 
 .table-container table tbody tr td {
  padding: 8px;
- /* New styles for overflow handling */
- max-width: 150px; /* Adjust this value based on your design */
+ min-width: max-content;
+ max-width: 300px;
  white-space: nowrap;
  font-weight: 400;
  overflow: hidden;
@@ -135,6 +137,7 @@ font-weight: 600;
 }
 
 .table-container table {
+  width: 100%;
  border-collapse: collapse;
 }
 
