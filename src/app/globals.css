@@ -174,3 +174,7 @@ padding: 8px;
 .headerNavigate::-webkit-scrollbar {
 height: 1px;
 }
+.modalCont::-webkit-scrollbar {
+width:2px;
+height: 2px;
+}

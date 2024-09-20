@@ -20,10 +20,6 @@ export const data = [
                 text: 'user list',
                 link: '/user',
             },
-            {
-                text: 'user',
-                link: '/contact',
-            },
         ] 
     },
     {

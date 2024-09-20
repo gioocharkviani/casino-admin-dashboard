@@ -9,14 +9,14 @@ interface Link1Props {
 }
 
 const styles = {
-  green: 'hover:bg-green-600 bg-green-500',
+  green: 'bg-bs-success hover:bg-hover-success',
   indigo: 'hover:bg-indigo-600 bg-indigo-500'
 }
 
 const Link1 = ({ title, link, style ,icon }: Link1Props) => {
   const Icon = icon;
   return (
-    <Link href={link} className={`${style ? styles[style] : styles.indigo} py-2 px-3 transition-all text-white rounded-sm text-sm font-medium flex items-center gap-2 justify-center`}>
+    <Link href={link} className={`${style ? styles[style] : styles.indigo} py-2 bg-[#6fb80f] px-3 transition-all text-white rounded-sm text-sm font-medium flex items-center gap-2 justify-center`}>
       <div className=''>
       {icon &&
       <Icon />

@@ -14,7 +14,7 @@ import DarkModeSwich from "../darkmode/DarkModeSwich";
 export default function Sidebar(){
     const [active, setactive] = useState(false)
   return (
-    <aside className='h-screen sticky top-0 left-0'>
+    <aside className='h-screen fixed z-10 top-0 left-0'>
         <nav className='p-2 pb-2 flex flex-col justify-between items-center bg-white dark:bg-darkBlue dark:text-white transition-all shadow-md rounded-r-md border-r dark:border-black h-full'>
 
             <div className='flex p-2 w-full gap-4 justify-end items-center'>

@@ -375,6 +375,7 @@ const filterModal = () => {
         )}
 
         {/* PAGINATION */}
+        {options.pagination &&
         <div className="mt-5 mb-2 flex justify-end mr-2">
           <div className="flex w-max gap-3 items-center">
             <button disabled={page === 1} onClick={() => setPage(page - 1)} className="font-bold text-lg p-1">
@@ -386,9 +387,12 @@ const filterModal = () => {
             <button disabled={page === maxPage || maxPage === 0} onClick={() => setPage(page + 1)} className="font-bold text-lg p-1">
               <MdKeyboardArrowRight />
             </button>
-              <span className="text-sm">Total Items: {totalItems || 0}</span>
+              {totalItems &&
+                <span className="text-sm">Total Items: {totalItems || 0}</span>
+              }
           </div>
         </div>
+        }
         {/* PAGINATION */}
       </div>
     </div>

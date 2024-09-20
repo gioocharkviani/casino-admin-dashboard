@@ -18,10 +18,10 @@ export default function RootLayout({
 
   return (
 
-        <main className="w-full flex dark:text-white">
+        <main className="w-full flex dark:text-white relative">
             <Modal />
             <Sidebar/>
-            <div className="w-full overflow-x-hidden p-2 flex flex-col">
+            <div className="w-full ml-[60px] overflow-x-hidden p-2 flex flex-col">
               <Header />
               <div className="px-2 py-2 transition-all">
                 {children}
