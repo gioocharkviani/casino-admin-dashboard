@@ -140,6 +140,7 @@ const Tables = ({ options }: TableProps) => {
   useEffect(() => {
     setChildren(childElement);
   }, [tempVisibleColumns, tempPerPage]);
+
   // SETTINGS
 
   // FILTER
