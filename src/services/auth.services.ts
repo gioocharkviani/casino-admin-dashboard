@@ -1,18 +1,17 @@
 import { api } from "@/config";
 
-
 export const currentUser = async (token: string) => {
   try {
     const response = await api({
       url: "/user",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
     // Check for different response status codes
-    if (response.statusCode >= 200 && response.statusCode < 300 ) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       return {
         statusCode: response.statusCode,
         message: "OK",
@@ -43,26 +42,26 @@ export const userLogin = async (body: object) => {
     const response = await api({
       url: "/auth/login",
       method: "POST",
-      body: body, 
+      body: body,
     });
-    
-    if(response.statusCode === 200){
-      const userToken = response.data.access_token
+
+    if (response.statusCode === 200) {
+      const userToken = response.data.access_token;
       const getUserAcess = await api({
         url: "/admin/my-roles",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
         },
       });
-      if(getUserAcess.statusCode === 403){
+      if (getUserAcess.statusCode === 403) {
         return getUserAcess;
       }
     }
     return response;
   } catch (error) {
-    console.log('catch block')
+    console.log("catch block");
     console.error("Error during user login:", error);
-    throw error; 
+    throw error;
   }
 };

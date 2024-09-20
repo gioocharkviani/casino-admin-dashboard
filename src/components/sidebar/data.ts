@@ -1,6 +1,7 @@
 import { LuLayoutDashboard } from "react-icons/lu";
 import { FiUsers } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { SlGameController } from "react-icons/sl";
 
 
 
@@ -26,6 +27,12 @@ export const data = [
         text: 'notification',
         link: '/notification',
         icon: IoNotificationsOutline, 
+        dropdown: [] 
+    },
+    {
+        text: 'games',
+        link: '/games',
+        icon: SlGameController, 
         dropdown: [] 
     },
 
