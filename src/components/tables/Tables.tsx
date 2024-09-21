@@ -53,9 +53,10 @@ const Tables = ({ options }: TableProps) => {
 
   // SETTINGS
   // Temporary states for managing the form data
-  const [tempVisibleColumns, setTempVisibleColumns] = useState([visibleColumns]);
+  const [tempVisibleColumns, setTempVisibleColumns] = useState(colMap);
   const [tempPerPage, setTempPerPage] = useState(perPage);
 
+  console.log(tempVisibleColumns);
   // Save the settings data to localStorage and apply it to the table
   const saveSettingsData = () => {
     const settingsData = {
@@ -119,8 +120,7 @@ const Tables = ({ options }: TableProps) => {
 
   // Handle setting opening and apply child element
   const setting = () => {
-    // When the settings modal is opened, set the temp states to current values
-    setTempVisibleColumns(visibleColumns);
+    setTempVisibleColumns(colMap);
     setTempPerPage(perPage);
     setOpen();
     setTitle("Table settings");
@@ -146,7 +146,6 @@ const Tables = ({ options }: TableProps) => {
   // Update child element whenever temp states change
   useEffect(() => {
     setChildren(childElement);
-    console.log("updated");
   }, [tempVisibleColumns, tempPerPage, visibleColumns]);
 
   // SETTINGS
