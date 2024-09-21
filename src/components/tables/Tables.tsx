@@ -76,7 +76,7 @@ const Tables = ({ options }: TableProps) => {
         (a, b) => columns.indexOf(a) - columns.indexOf(b),
       );
     } else {
-      updatedVisibleColumns = tempVisibleColumns.filter(c => c !== col);
+      updatedVisibleColumns = tempVisibleColumns.filter((c) => c !== col);
     }
     setTempVisibleColumns(updatedVisibleColumns);
   };
@@ -92,7 +92,7 @@ const Tables = ({ options }: TableProps) => {
             id={col}
             label={col}
             checked={tempVisibleColumns.includes(col)}
-            onChange={e => setTempVisibleCol({ e, col })}
+            onChange={(e) => setTempVisibleCol({ e, col })}
           />
         ))}
       </form>
@@ -100,7 +100,7 @@ const Tables = ({ options }: TableProps) => {
       <Input
         type="number"
         value={tempPerPage.toString()}
-        onChange={e => setTempPerPage(Number(e.target.value))}
+        onChange={(e) => setTempPerPage(Number(e.target.value))}
         min={1}
       />
       <Button onClick={() => saveSettingsData()}>
@@ -108,6 +108,14 @@ const Tables = ({ options }: TableProps) => {
       </Button>
     </div>
   );
+
+  // Reset store values when the page changes
+  useEffect(() => {
+    setSelectedRows([]);
+    setSort("", "asc"); // Reset sorting
+    setSearch(""); // Clear search query
+    setVisibleColumns(columns); // Reset visible columns to default
+  }, [page]); // Run this when the page value changes
 
   // Handle setting opening and apply child element
   const setting = () => {
@@ -218,7 +226,7 @@ const Tables = ({ options }: TableProps) => {
     if (allSelected) {
       setSelectedRows([]);
     } else {
-      const allRowIds = rowsData.map(row => row.id);
+      const allRowIds = rowsData.map((row) => row.id);
       setSelectedRows(allRowIds);
     }
     setAllSelected(!allSelected);
@@ -228,7 +236,7 @@ const Tables = ({ options }: TableProps) => {
   const handleRowSelect = (id: any) => {
     const isSelected = selectedRows.includes(id);
     if (isSelected) {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
+      setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
     } else {
       setSelectedRows([...selectedRows, id]);
     }
@@ -307,7 +315,7 @@ const Tables = ({ options }: TableProps) => {
                   {/* END CHECKBOX FOR SELECT ALL */}
 
                   {/* MAP ALL COLUMNS */}
-                  {colMap.map(i => (
+                  {colMap.map((i) => (
                     <th key={i}>
                       <button className="w-full" disabled={!options.sort} onClick={() => handleSort(i)}>
                         <div className="flex items-center w-full gap-1">

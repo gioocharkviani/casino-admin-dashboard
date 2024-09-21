@@ -27,7 +27,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/utils/token.ts",
-    "src/app/not-found.js"
+    "src/app/not-found.tsx"
   ],
   "exclude": ["node_modules"]
 }
