@@ -16,11 +16,7 @@ const UserList = () => {
         const apiUrl = `/admin/users?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
-        setMaxPage(
-          Math.round(userData?.total / userData?.per_page) === 0
-            ? 1
-            : Math.round(userData?.total / userData?.per_page),
-        );
+        setMaxPage(Math.ceil(userData?.total / userData?.per_page));
         setTotalItems(userData?.total);
       } catch (error) {
         console.error("Error fetching user data:", error);
