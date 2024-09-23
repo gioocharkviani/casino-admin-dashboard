@@ -200,9 +200,16 @@ const Tables = ({ options }: TableProps) => {
   // SORT FUNCTION
 
   // SEARCH
+  const [debounceValue, setDebounceValue] = useState("");
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    setDebounceValue(e.target.value);
   };
+  React.useEffect(() => {
+    const getData = setTimeout(() => {
+      setSearch(debounceValue);
+    }, 500);
+    return () => clearTimeout(getData);
+  }, [debounceValue]);
 
   // Highlight search term
   const highlightText = (text: string, searchTerm: string) => {
@@ -257,7 +264,12 @@ const Tables = ({ options }: TableProps) => {
           {/* SEARCH */}
           <div className="flex w-max gap-2 justify-center items-center">
             {options.search && (
-              <Input type="text" placeholder="search" value={search} onChange={handleSearchChange} />
+              <Input
+                type="text"
+                placeholder="search"
+                value={debounceValue}
+                onChange={handleSearchChange}
+              />
             )}
           </div>
           {/* SEARCH */}
