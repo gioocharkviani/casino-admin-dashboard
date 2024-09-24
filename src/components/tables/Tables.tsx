@@ -14,6 +14,7 @@ import useTableStore from "@/store/useTableStore";
 import useModalStore from "@/store/useModalStore";
 import Checkbox1 from "../ui/Checkbox1";
 import Link from "next/link";
+import Checkbox from "../ui/Checkbox";
 
 interface TableProps {
   options: object | any;
@@ -320,7 +321,8 @@ const Tables = ({ options }: TableProps) => {
                   {/* CHECKBOX FOR SELECT ALL */}
                   {options.select && (
                     <th>
-                      <input type="checkbox" checked={allSelected} onChange={handleSelectAll} />
+                      <Checkbox id="all-select-funct" checked={allSelected} onChange={handleSelectAll} />
+                      {/* <input type="checkbox" checked={allSelected} onChange={handleSelectAll} /> */}
                     </th>
                   )}
                   {/* END CHECKBOX FOR SELECT ALL */}
@@ -358,10 +360,10 @@ const Tables = ({ options }: TableProps) => {
                     {/* CHECKBOX FOR SELECT EACH ROW */}
                     {options.select && (
                       <td>
-                        <input
-                          type="checkbox"
+                        <Checkbox
+                          id={`row-select-${row.id}`}
                           checked={selectedRows.includes(row.id)}
-                          onChange={() => handleRowSelect(row.id)}
+                          onChange={() => handleRowSelect(row.id)} // Use correct handler
                         />
                       </td>
                     )}
