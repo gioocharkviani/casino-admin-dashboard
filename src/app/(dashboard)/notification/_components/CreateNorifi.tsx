@@ -9,18 +9,33 @@ import { FaEye } from "react-icons/fa";
 
 
 const CreateNotifi = () => {
-  const [selectedValue, setSelectedValue] = useState('');
+//   NOTIFICATION RECIPIENT ID
 
-  const options = [
-    { value: 'NOTIFI', label: 'Notifi' },
-    { value: 'POPUP', label: 'Popup' },
-  ];
+const options2 = [
+    { value: 'NOTIFI' },
+    { value: 'POPUP' },]
+//   NOTIFICATION RECIPIENT ID
+
+//   NOTIFICATION CATEGORY
+const [selectedValue, setSelectedValue] = useState('');
+const options = [
+    { value: 'NOTIFI'},
+    { value: 'POPUP'},
+];
+//   NOTIFICATION CATEGORY
 
   return (
     <div className='w-full'>
         <form className='flex flex-col gap-5'>
           <div className='flex gap-5 flex-col md:flex-row'>
-            <Input type='text' label='Recipient id'/>
+            <Select
+              options={options2}
+              search={true}
+              select={true}
+              label='Select Recepient Id' 
+              selectedValue={selectedValue} 
+              onChange={(value: string)=>setSelectedValue(value)} 
+            />
             <Select options={options} label='select category' selectedValue={selectedValue} onChange={(value: string)=>setSelectedValue(value)} />
           </div>
           <div>

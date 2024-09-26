@@ -1,4 +1,4 @@
-import CreateNotifi from '@/components/forms/notification/CreateNorifi'
+import CreateNotifi from '@/app/(dashboard)/notification/_components/CreateNorifi'
 import React from 'react'
 
 const page = () => {

@@ -23,7 +23,7 @@ const Textarea = ({error , label}:InputProps) => {
             )}
         <textarea
             id='textarea'
-            className={`w-full  px-3 py-2 text-sm outline-none min-h-52 rounded-md border shadow-sm  text-gray-900 transition-colors border-gray-300 focus:border-1  focus:border-indigo-500 ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
+            className={`w-full  px-3 py-2 text-sm outline-none min-h-52 rounded-md border shadow-sm  text-gray-900 transition-colors border-gray-300 dark:text-white dark:bg-transparent focus:border-1  focus:border-indigo-500 ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
             />
             {error && (
                 <p className="mt-1 text-sm text-red-500">

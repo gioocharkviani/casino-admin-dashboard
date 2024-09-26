@@ -13,7 +13,7 @@ const Checkbox1 = ({ label, id, checked, onChange }: Checkbox1Props) => {
       <input id={id} type="checkbox" checked={checked} onChange={onChange} className="hidden" />
       <label
         htmlFor={id}
-        className={`checkbox1label px-3 py-2 boroder shadow-lg font-medium rounded-md w-full cursor-pointer h-full flex justify-center items-center`}
+        className={`checkbox1label px-3 py-2 boroder text-nowrap shadow-lg font-medium rounded-md w-full cursor-pointer h-full flex justify-center items-center`}
       >
         {label}
       </label>
