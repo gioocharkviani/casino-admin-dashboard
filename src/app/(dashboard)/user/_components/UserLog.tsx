@@ -5,6 +5,7 @@ import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { useParams } from 'next/navigation';
+import { TableOptions } from '@/components/tables/tableOptions.types';
 
 const UserLog = () => {
   const {
@@ -38,15 +39,18 @@ const UserLog = () => {
     fetchData();
   }, [page, perPage, sortBy, sortDirection, setData, search]);
 
-  const tableOptions = {
+  const tableOptions: TableOptions = {
     search: true,
     select: true,
-    filter: false,
+    filter: {
+      active: false,
+      filterBy: [],
+    },
     saveData: true,
     pagination: true,
     sort: true,
     trclickaction: {
-      active: false,
+      active: true,
       link: '/user/logs',
       component: null,
     },
