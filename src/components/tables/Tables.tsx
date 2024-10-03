@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { FaRegEdit } from "react-icons/fa";
-import { IoIosSettings, IoMdAdd } from "react-icons/io";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import { HiSortAscending, HiSortDescending } from "react-icons/hi";
-import Link1 from "../ui/Link1";
-import Button from "../ui/Button";
-import { IoFilter, IoSave } from "react-icons/io5";
-import Input from "../ui/Input";
-import * as XLSX from "xlsx";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { FaRegEdit } from 'react-icons/fa';
+import { IoIosSettings, IoMdAdd } from 'react-icons/io';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+import { HiSortAscending, HiSortDescending } from 'react-icons/hi';
+import Link1 from '../ui/Link1';
+import Button from '../ui/Button';
+import { IoFilter, IoSave } from 'react-icons/io5';
+import Input from '../ui/Input';
+import * as XLSX from 'xlsx';
 
-import useTableStore from "@/store/useTableStore";
-import useModalStore from "@/store/useModalStore";
-import Checkbox1 from "../ui/Checkbox1";
-import Link from "next/link";
-import Checkbox from "../ui/Checkbox";
+import useTableStore from '@/store/useTableStore';
+import useModalStore from '@/store/useModalStore';
+import Checkbox1 from '../ui/Checkbox1';
+import Link from 'next/link';
+import Checkbox from '../ui/Checkbox';
+import { TableOptions } from './tableOptions.types';
 
 interface TableProps {
-  options: object | any;
+  options: TableOptions;
 }
 
 const Tables = ({ options }: TableProps) => {
@@ -41,7 +43,7 @@ const Tables = ({ options }: TableProps) => {
   } = useTableStore();
   const { setOpen, setChildren, setTitle } = useModalStore();
   const [allSelected, setAllSelected] = useState(false);
-
+  const router = useRouter();
   // Columns && rows
   const columns = data?.length > 0 ? Object.keys(data[0]) : [];
   const rowsData = data?.length > 0 ? data : [];
@@ -53,11 +55,11 @@ const Tables = ({ options }: TableProps) => {
   }, [perPage]);
 
   // SETTINGS
+
   // Temporary states for managing the form data
   const [tempVisibleColumns, setTempVisibleColumns] = useState(colMap);
   const [tempPerPage, setTempPerPage] = useState(perPage);
 
-  console.log(tempVisibleColumns);
   // Save the settings data to localStorage and apply it to the table
   const saveSettingsData = () => {
     const settingsData = {
@@ -75,7 +77,7 @@ const Tables = ({ options }: TableProps) => {
     let updatedVisibleColumns;
     if (e.target.checked) {
       updatedVisibleColumns = [...tempVisibleColumns, col].sort(
-        (a, b) => columns.indexOf(a) - columns.indexOf(b),
+        (a, b) => columns.indexOf(a) - columns.indexOf(b)
       );
     } else {
       updatedVisibleColumns = tempVisibleColumns.filter((c) => c !== col);
@@ -114,8 +116,8 @@ const Tables = ({ options }: TableProps) => {
   // Reset store values when the page changes
   useEffect(() => {
     setSelectedRows([]);
-    setSort("", "asc");
-    setSearch("");
+    setSort('', 'asc');
+    setSearch('');
     setVisibleColumns(columns);
   }, [page]);
 
@@ -124,7 +126,7 @@ const Tables = ({ options }: TableProps) => {
     setTempVisibleColumns(colMap);
     setTempPerPage(perPage);
     setOpen();
-    setTitle("Table settings");
+    setTitle('Table settings');
     setChildren(childElement);
   };
 
@@ -154,6 +156,7 @@ const Tables = ({ options }: TableProps) => {
   // FILTER
   const filterModal = () => {
     setOpen();
+    setTitle('Filter By');
     setChildren(<div>filter function</div>);
   };
   // FILTER
@@ -161,38 +164,37 @@ const Tables = ({ options }: TableProps) => {
   // SAVE DATA
   const saveAs = () => {
     // Filter only selected rows
-    const selectedRowsData = rowsData.filter((row: any) => selectedRows.includes(row.id));
-    // Map the data to match the column structure
+    const selectedRowsData = rowsData.filter((row: any) =>
+      selectedRows.includes(row.id)
+    );
     const exportData = selectedRowsData.map((row: any) => {
       const rowData: any = {};
       colMap.forEach((col: string) => {
-        rowData[col] = row[col] !== null && row[col] !== undefined ? row[col] : "";
+        rowData[col] =
+          row[col] !== null && row[col] !== undefined ? row[col] : '';
       });
       return rowData;
     });
 
-    // Create a worksheet
     const ws = XLSX.utils.json_to_sheet(exportData, { header: colMap });
-    // Create a workbook and append the worksheet
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "SelectedRows");
-    // Generate Excel file and trigger download
-    XLSX.writeFile(wb, "selected_rows.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, 'TablesData');
+    XLSX.writeFile(wb, 'TABLE_DATA.xlsx');
   };
   // SAVE DATA
 
   // SORT FUNCTION
   const handleSort = (column: any) => {
     if (sortBy === column) {
-      setSort(column, sortDirection === "asc" ? "desc" : "asc");
+      setSort(column, sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSort(column, "asc");
+      setSort(column, 'asc');
     }
   };
 
   // Render sort icon
   const renderSortIcon = (column: string) => {
-    if (sortDirection === "asc" && sortBy === column) {
+    if (sortDirection === 'asc' && sortBy === column) {
       return <HiSortDescending />;
     } else {
       return <HiSortAscending />;
@@ -200,8 +202,16 @@ const Tables = ({ options }: TableProps) => {
   };
   // SORT FUNCTION
 
+  //TRCLICKACTION
+  const trClickHandler = (id: string | number) => {
+    if (options.trclickaction.active) {
+      router.push(`${options.trclickaction.link}/${id}`);
+    }
+  };
+  //TRCLICKACTION
+
   // SEARCH
-  const [debounceValue, setDebounceValue] = useState("");
+  const [debounceValue, setDebounceValue] = useState('');
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDebounceValue(e.target.value);
   };
@@ -215,7 +225,7 @@ const Tables = ({ options }: TableProps) => {
   // Highlight search term
   const highlightText = (text: string, searchTerm: string) => {
     if (!searchTerm) return text;
-    const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
+    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
     return parts.map((part, index) =>
       part.toLowerCase() === searchTerm.toLowerCase() ? (
         <span key={index} className="text-indigo-500 font-bold">
@@ -223,7 +233,7 @@ const Tables = ({ options }: TableProps) => {
         </span>
       ) : (
         part
-      ),
+      )
     );
   };
   // SEARCH
@@ -276,7 +286,7 @@ const Tables = ({ options }: TableProps) => {
           {/* SEARCH */}
           <div className="flex gap-2 justify-center">
             {/* FILTER BUTTON */}
-            {options.filter && (
+            {options.filter.active && (
               <Button onClick={() => filterModal()}>
                 <IoFilter />
               </Button>
@@ -293,7 +303,10 @@ const Tables = ({ options }: TableProps) => {
 
             {/* SAVE BUTTON */}
             {options.saveData && (
-              <Button disable={selectedRows.length > 0} onClick={() => saveAs()}>
+              <Button
+                disable={selectedRows.length > 0}
+                onClick={() => saveAs()}
+              >
                 <IoSave />
               </Button>
             )}
@@ -301,7 +314,12 @@ const Tables = ({ options }: TableProps) => {
 
             {/* CREATE NEW */}
             {options.create.active && (
-              <Link1 link={options.create.link} icon={IoMdAdd} style="green" title="CREATE" />
+              <Link1
+                link={options.create.link}
+                icon={IoMdAdd}
+                style="green"
+                title="CREATE"
+              />
             )}
             {/* CREATE NEW */}
           </div>
@@ -314,15 +332,21 @@ const Tables = ({ options }: TableProps) => {
           </div>
         ) : (
           <div className="overflow-x-auto pb-5 mt-5 border rounded-md shadow-lg table-container">
-            <table id="data-table" className="min-w-full w-max text-left table-auto border-collapse">
+            <table
+              id="data-table"
+              className="min-w-full w-max text-left table-auto border-collapse"
+            >
               {/* TABLE HEAD */}
               <thead>
                 <tr className="text-sm font-light">
                   {/* CHECKBOX FOR SELECT ALL */}
                   {options.select && (
                     <th>
-                      <Checkbox id="all-select-funct" checked={allSelected} onChange={handleSelectAll} />
-                      {/* <input type="checkbox" checked={allSelected} onChange={handleSelectAll} /> */}
+                      <Checkbox
+                        id="all-select-funct"
+                        checked={allSelected}
+                        onChange={handleSelectAll}
+                      />
                     </th>
                   )}
                   {/* END CHECKBOX FOR SELECT ALL */}
@@ -330,7 +354,11 @@ const Tables = ({ options }: TableProps) => {
                   {/* MAP ALL COLUMNS */}
                   {colMap.map((i) => (
                     <th key={i}>
-                      <button className="w-full" disabled={!options.sort} onClick={() => handleSort(i)}>
+                      <button
+                        className="w-full"
+                        disabled={!options.sort}
+                        onClick={() => handleSort(i)}
+                      >
                         <div className="flex items-center w-full gap-1">
                           {/* Check if this is the currently sorted column */}
                           {options.sort && renderSortIcon(i)}
@@ -356,7 +384,13 @@ const Tables = ({ options }: TableProps) => {
 
               <tbody>
                 {rowsData.map((row: any) => (
-                  <tr key={row.id} className="hover:bg-[#f6f6f6] dark:hover:bg-darkBg">
+                  <tr
+                    onClick={() => trClickHandler(row.id)}
+                    key={row.id}
+                    className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg ${
+                      options.trclickaction.active ? 'cursor-pointer' : ''
+                    }`}
+                  >
                     {/* CHECKBOX FOR SELECT EACH ROW */}
                     {options.select && (
                       <td>
@@ -372,13 +406,13 @@ const Tables = ({ options }: TableProps) => {
                     {/* MAP ROW DATA */}
                     {colMap.map((col: string) => (
                       <td className="text-sm" key={col}>
-                        {col === "roles" && row[col] && row[col].length > 0 ? (
+                        {col === 'roles' && row[col] && row[col].length > 0 ? (
                           // Check if the column is 'roles' and roles array is not empty
                           <span>{row[col][0].name}</span>
                         ) : row[col] === undefined ? (
-                          "undefined"
+                          'undefined'
                         ) : row[col] === null ? (
-                          "null"
+                          'null'
                         ) : (
                           highlightText(row[col].toString(), search)
                         )}
@@ -392,7 +426,10 @@ const Tables = ({ options }: TableProps) => {
                         <div className="w-full relative flex gap-2 justify-end items-center h-full">
                           {options.actions.edit && (
                             <Link href={`${options.actions.edit}?id=${row.id}`}>
-                              <FaRegEdit title="edit" className="cursor-pointer hover:text-indigo-500" />
+                              <FaRegEdit
+                                title="edit"
+                                className="cursor-pointer hover:text-indigo-500"
+                              />
                             </Link>
                           )}
                           {options.actions.remove && (
@@ -433,7 +470,9 @@ const Tables = ({ options }: TableProps) => {
               >
                 <MdKeyboardArrowRight />
               </button>
-              {totalItems && <span className="text-sm">Total Items: {totalItems || 0}</span>}
+              {totalItems && (
+                <span className="text-sm">Total Items: {totalItems || 0}</span>
+              )}
             </div>
           </div>
         )}

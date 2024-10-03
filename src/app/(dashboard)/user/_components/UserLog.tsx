@@ -4,9 +4,9 @@ import Tables from '@/components/tables/Tables';
 import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
-import { TableOptions } from '@/components/tables/tableOptions.types';
+import { useParams } from 'next/navigation';
 
-const UserList = () => {
+const UserLog = () => {
   const {
     page,
     perPage,
@@ -18,12 +18,14 @@ const UserList = () => {
     setTotalItems,
   } = useTableStore();
 
+  const params = useParams();
+
   useEffect(() => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
+        const apiUrl = `${backendUrl}/admin/users/${params.id}/logs`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
         setMaxPage(Math.ceil(userData?.total / userData?.per_page));
@@ -36,18 +38,15 @@ const UserList = () => {
     fetchData();
   }, [page, perPage, sortBy, sortDirection, setData, search]);
 
-  const tableOptions: TableOptions = {
+  const tableOptions = {
     search: true,
     select: true,
-    filter: {
-      active: false,
-      filterBy: [],
-    },
+    filter: false,
     saveData: true,
     pagination: true,
     sort: true,
     trclickaction: {
-      active: true,
+      active: false,
       link: '/user/logs',
       component: null,
     },
@@ -73,4 +72,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default UserLog;

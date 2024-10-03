@@ -1,17 +1,18 @@
-"use client";
-import React, { useRef, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
-import useModalStore from "@/store/useModalStore";
+'use client';
+import React, { useRef, useEffect } from 'react';
+import { IoClose } from 'react-icons/io5';
+import useModalStore from '@/store/useModalStore';
 
 const Modal = () => {
-  const { children, isOpen, setClose, setOpen, title, setChildren } = useModalStore();
+  const { children, isOpen, setClose, setOpen, title, setChildren } =
+    useModalStore();
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   // Close modal and clean up state
   const closeModal = () => {
     setChildren(null);
     setClose();
-    document.body.classList.remove("overflow-hidden"); // Enable scroll on main page
+    document.body.classList.remove('overflow-hidden'); // Enable scroll on main page
   };
 
   // Close modal when clicking outside
@@ -24,11 +25,11 @@ const Modal = () => {
   // Add/remove event listener for clicking outside and handle scroll lock
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add("overflow-hidden"); // Disable scroll on main page
-      document.addEventListener("mousedown", handleClickOutside);
+      document.body.classList.add('overflow-hidden'); // Disable scroll on main page
+      document.addEventListener('mousedown', handleClickOutside);
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        document.body.classList.remove("overflow-hidden"); // Ensure scroll is enabled when modal closes
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.body.classList.remove('overflow-hidden'); // Ensure scroll is enabled when modal closes
       };
     }
   }, [isOpen]);
@@ -37,10 +38,10 @@ const Modal = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 px-5 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 px-4 flex items-center justify-center bg-black bg-opacity-50 z-[999999]">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-darkBlue max-h-[100vh] rounded-lg shadow-lg w-full max-w-lg p-6 relative"
+        className="bg-white dark:bg-darkBlue max-h-[100vh] rounded-lg shadow-lg w-full max-w-lg p-4 relative"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{title}</h2>
@@ -51,7 +52,7 @@ const Modal = () => {
             <IoClose />
           </button>
         </div>
-        <div className="modalCont p-4 overflow-y-auto max-h-[80vh]">
+        <div className="modalCont pr-2 overflow-y-auto max-h-[80vh]">
           {children}
         </div>
       </div>

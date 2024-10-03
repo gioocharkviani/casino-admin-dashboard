@@ -1,40 +1,38 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Head from "next/head";
-import { userLogin } from "@/services";
-import { handleSetAuthCookie } from "@/utils/token";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Head from 'next/head';
+import { userLogin } from '@/services';
+import { handleSetAuthCookie } from '@/utils/token';
 
 export default function AdminLogin() {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); // Loading state
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); // Start loading
-    setError("");
+    setError('');
 
-    const signInBody = { user_name: userName, password };
+    const signInBody = { user: userName, password };
     try {
       const res = await userLogin(signInBody);
       if (res.statusCode === 200) {
         handleSetAuthCookie(res.data.access_token);
         router.push('/');
-      }else if(res.statusCode === 403){
-        setError("Invalid Credentials");
+      } else if (res.statusCode === 403) {
+        setError('Invalid Credentials');
         router.push('https://www.youtube.com/watch?v=oJtHVUgoHNM');
-      }
-      
-      else {
-        setError("Invalid Credentials");
+      } else {
+        setError('Invalid Credentials');
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError('Something went wrong. Please try again.');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -91,7 +89,9 @@ export default function AdminLogin() {
                 type="submit"
                 disabled={loading} // Disable button when loading
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 ${
-                  loading ? "bg-indigo-400 cursor-not-allowed" : "hover:bg-indigo-700"
+                  loading
+                    ? 'bg-indigo-400 cursor-not-allowed'
+                    : 'hover:bg-indigo-700'
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
               >
                 {loading ? (
@@ -116,7 +116,7 @@ export default function AdminLogin() {
                     ></path>
                   </svg>
                 ) : (
-                  "Sign in"
+                  'Sign in'
                 )}
               </button>
             </div>

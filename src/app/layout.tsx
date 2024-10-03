@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import Provider from '@/providers/Provider';
 
 export const metadata: Metadata = {
-  title: "CASINO ADMIN",
-  description: "CASINO ADMIN",
+  title: 'CASINO ADMIN',
+  description: 'CASINO ADMIN',
 };
 
 export default function RootLayout({
@@ -14,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="max-w-screen">
-
-                {children}
-
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

@@ -1,85 +1,109 @@
-'use client';
 import React, { useState } from 'react';
-import Input from './Input';
-import Checkbox1 from './Checkbox1';
+import { IoIosArrowForward } from 'react-icons/io';
 
 interface Option {
-  value: string;
+  label: string;
+  value: string | number;
 }
 
 interface SelectProps {
+  label?: string | null;
+  name?: string;
   options: Option[];
-  search?: boolean;
-  select?: boolean;
-  label?: string;
-  selectedValue?: string;
-  onChange: (value: string) => void;
+  error?: string | null;
+  placeholder?: string;
+  onChange: (value: string | number) => void;
 }
 
 const Select: React.FC<SelectProps> = ({
-  options,
-  selectedValue,
-  onChange,
   label,
-  search,
-  select,
+  name,
+  options,
+  error,
+  placeholder,
+  onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(
-    options.find((option) => option.value === selectedValue) || null
-  );
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState<string | number>('');
 
-  const handleOptionClick = (option: Option) => {
-    setSelectedOption(option);
+  const handleSelect = (option: Option) => {
+    setSelected(option.value);
     onChange(option.value);
     setIsOpen(false);
   };
 
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="relative w-full">
-      <span className="block text-sm font-medium transition-all ">{label}</span>
-
-      <div
-        className={`w-full  px-3 py-2 text-sm mt-1 flex border items-center ${
-          isOpen ? 'border-indigo-500 border' : ''
-        } justify-between border-1 border-gray-300 dark:bg-transparent  bg-white rounded-md shadow-sm cursor-pointer`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="text-gray-900 text-sm dark:text-white">
-          {selectedOption ? selectedOption.value : 'Select an option'}
-        </span>
-
-        <div
-          className={`w-2 h-2 border-l-2  dark:border-white border-darkBlue text-sm border-b-2 transform ${
-            isOpen ? '-rotate-45' : 'rotate-135'
-          } transition-transform`}
-        ></div>
-      </div>
-
-      {isOpen && (
-        <div className="absolute max-h-[300px] overflow-y-auto left-0 top-full text-sm mt-2 w-full border dark:text-black border-gray-300 dark:border-darkBg rounded-md overflow-hidden shadow-lg bg-white dark:bg-gray-800 z-10 pb-2">
-          {(search || select) && (
-            <div className="flex justify-between p-2 items-center gap-2">
-              {select && <Checkbox1 id="1" label="select all" />}
-              {search && <Input type="text" placeholder="find user" />}
-            </div>
-          )}
-
-          {options.map((option) => (
-            <div
-              key={option?.value}
-              className={`px-4 py-2 cursor-pointer dark:text-white capitalize dark:hover:bg-darkBg hover:bg-gray-100 ${
-                selectedOption?.value === option.value
-                  ? 'bg-gray-200 dark:bg-darkBg'
-                  : ''
-              }`}
-              onClick={() => handleOptionClick(option)}
-            >
-              {option.value}
-            </div>
-          ))}
-        </div>
+      {label && (
+        <label
+          htmlFor={name}
+          className={`block text-sm font-medium mb-1 transition-all ${
+            error ? 'text-red-500' : 'text-gray-700 dark:text-[#e9e9e9]'
+          }`}
+        >
+          {label}
+        </label>
       )}
+      <div className="relative">
+        <button
+          type="button"
+          className={`w-full px-3 py-2 border dark:bg-transparent dark:text-white border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 text-left focus:border-indigo-500 sm:text-sm flex justify-between items-center
+            ${
+              error
+                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                : ''
+            }
+          `}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>
+            {selected
+              ? options.find((option) => option.value === selected)?.label
+              : placeholder || 'Select...'}
+          </span>
+          <div
+            className={`ml-2 transform transition-transform ${
+              isOpen ? 'rotate-90' : ''
+            }`}
+          >
+            <IoIosArrowForward />
+          </div>
+        </button>
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+
+        {isOpen && (
+          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
+            <input
+              type="text"
+              className="w-full px-3 py-2 border-b dark:bg-transparent dark:text-white border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Search..."
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <ul className="py-1 text-sm text-gray-700 dark:text-[#e9e9e9]">
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((option) => (
+                  <li
+                    key={option.value}
+                    className="cursor-pointer px-4 py-2 hover:bg-indigo-500 hover:text-white dark:hover:bg-gray-600"
+                    onClick={() => handleSelect(option)}
+                  >
+                    {option.label}
+                  </li>
+                ))
+              ) : (
+                <li className="px-4 py-2 text-gray-500">No options found</li>
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
