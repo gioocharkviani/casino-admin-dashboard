@@ -21,8 +21,8 @@ export default function AdminLogin() {
     try {
       const res = await userLogin(signInBody);
       if (res.statusCode === 200) {
-        handleSetAuthCookie(res.data.access_token);
-        router.push('/');
+        handleSetAuthCookie(res.data.data.access_token);
+        router.refresh();
       } else if (res.statusCode === 403) {
         setError('Invalid Credentials');
         router.push('https://www.youtube.com/watch?v=oJtHVUgoHNM');

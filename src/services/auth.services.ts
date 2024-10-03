@@ -48,9 +48,9 @@ export const userLogin = async (body: object) => {
     });
 
     if (response.statusCode === 200) {
-      const userToken = response.data.access_token;
+      const userToken = response.data.data.access_token;
       const getUserAcess = await api({
-        url: `${backendUrl}/admin/my-roles`,
+        url: `${backendUrl}/user`,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken}`,

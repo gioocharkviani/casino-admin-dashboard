@@ -28,6 +28,20 @@ export async function middleware(request: NextRequest) {
         response.cookies.delete('auth');
         return response;
       }
+
+      const allowedRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'];
+      const userRoles = user.data.data.roles;
+
+      if (userRoles.some((role: string) => allowedRoles.includes(role))) {
+        if (pathname === '/signin') {
+          return NextResponse.redirect(new URL('/', request.url));
+        }
+        return NextResponse.next();
+      } else {
+        const response = NextResponse.redirect(new URL('/signin', request.url));
+        response.cookies.delete('auth');
+        return response;
+      }
     } catch (error) {
       console.log(error);
       const response = NextResponse.redirect(new URL('/signin', request.url));
@@ -36,11 +50,6 @@ export async function middleware(request: NextRequest) {
         .map((i, index) => response.cookies.delete(`${i.name}`));
       return response;
     }
-  }
-
-  // Redirect from /users/logs to /users
-  if (pathname === '/user/logs') {
-    return NextResponse.redirect(new URL('/user', request.url));
   }
 
   return NextResponse.next(); // Allow all other routes
