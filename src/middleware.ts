@@ -6,6 +6,7 @@ export async function middleware(request: NextRequest) {
   const token: any = request.cookies.get('auth')?.value;
   const { pathname } = request.nextUrl;
 
+  // Allow access to certain static resources and the Next.js internal paths
   if (
     pathname.startsWith('/_next/') ||
     pathname.startsWith('/static/') ||
@@ -19,7 +20,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/signin', request.url));
   }
 
-  // If the token exists in cookies
   if (token) {
     try {
       const user = await currentUser(token);
@@ -29,19 +29,40 @@ export async function middleware(request: NextRequest) {
         return response;
       }
 
-      const allowedRoles = ['SUPER_ADMIN', 'ADMIN', 'SUPPORT'];
+      //ROLLED ACCESS ROUTES
       const userRoles = user.data.data.roles;
+      const isSuperAdmin = userRoles.includes('SUPER_ADMIN');
+      const isAdmin = userRoles.includes('ADMIN');
+      const isSupport = userRoles.includes('SUPPORT');
+      // Define restricted routes for ADMIN and SUPPORT
+      const restrictedRoutesForAdmin = ['/admin-only'];
+      const restrictedRoutesForSupport = ['/support-only', '/admin-only'];
+      //ROLLED ACCESS ROUTES
 
-      if (userRoles.some((role: string) => allowedRoles.includes(role))) {
+      // SUPER_ADMIN has access to all routes
+      if (isSuperAdmin) {
         if (pathname === '/signin') {
           return NextResponse.redirect(new URL('/', request.url));
         }
         return NextResponse.next();
-      } else {
-        const response = NextResponse.redirect(new URL('/signin', request.url));
-        response.cookies.delete('auth');
-        return response;
       }
+
+      // If the user is ADMIN, check for restricted routes
+      if (isAdmin && restrictedRoutesForAdmin.includes(pathname)) {
+        return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
+      }
+
+      // If the user is SUPPORT, check for restricted routes
+      if (isSupport && restrictedRoutesForSupport.includes(pathname)) {
+        return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
+      }
+
+      // Redirect signed-in users from /signin to the homepage
+      if (pathname === '/signin') {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+
+      return NextResponse.next(); // Allow all other routes for ADMIN and SUPPORT
     } catch (error) {
       console.log(error);
       const response = NextResponse.redirect(new URL('/signin', request.url));
