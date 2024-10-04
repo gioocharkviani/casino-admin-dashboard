@@ -5,13 +5,28 @@ import { handleDeleteAuthCookie } from '@/utils/token';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import useUserStore from '@/store/useUserStore';
+import { currentUser } from '@/services';
+import { handleGetAuthCookie } from '@/utils/cookies';
 
 const User = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const router = useRouter();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const token = await handleGetAuthCookie();
+        const user = await currentUser(token);
+        setUser(user.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUser();
+  }, []);
 
   const signOut = () => {
     handleDeleteAuthCookie();
