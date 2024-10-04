@@ -1,20 +1,21 @@
-"use client";
-import { useState, useEffect, useRef } from "react";
-import { LiaSignOutAltSolid, LiaUserCircleSolid } from "react-icons/lia"; // Use user icon
-import { handleDeleteAuthCookie } from "@/utils/token";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { LiaSignOutAltSolid, LiaUserCircleSolid } from 'react-icons/lia'; // Use user icon
+import { handleDeleteAuthCookie } from '@/utils/token';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import useUserStore from '@/store/useUserStore';
 
 const User = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to toggle dropdown
+  const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUserStore();
   const router = useRouter();
   const pathname = usePathname();
-  const dropdownRef = useRef<HTMLDivElement>(null); // Ref to detect outside clicks
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const signOut = () => {
     handleDeleteAuthCookie();
-    router.push("/signin");
+    router.push('/signin');
   };
 
   const toggleDropdown = () => {
@@ -32,17 +33,15 @@ const User = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dropdownRef]);
 
-  useEffect(()=>{
-    setIsOpen(false)
-  },[pathname])
-
-
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -57,11 +56,20 @@ const User = () => {
       {/* DROPDOWN MENU */}
       {isOpen && (
         <div
-          className={`absolute right-0 mt-4 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 transition-transform transform origin-top-right duration-300 ${
-            isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          className={`absolute right-0 mt-4 min-w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 transition-transform transform origin-top-right duration-300 ${
+            isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
           }`}
         >
           {/* Logout button */}
+
+          {/* Status or other links */}
+          <span className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150">
+            Hello : {user?.first_name}
+          </span>
+          <span className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150">
+            Role : {user?.roles[0]}
+          </span>
+
           <button
             className="flex items-center gap-2 px-4 py-2 w-full text-left text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
             onClick={signOut}
@@ -69,11 +77,6 @@ const User = () => {
             <LiaSignOutAltSolid />
             <span>Logout</span>
           </button>
-
-          {/* Status or other links */}
-          <span className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150">
-            Status: Online
-          </span>
         </div>
       )}
     </div>

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { currentUser } from '@/services/';
 
+import { accessRoutesForAdmin, accessRoutesForSupport } from './guards';
+
 export async function middleware(request: NextRequest) {
   const token: any = request.cookies.get('auth')?.value;
   const { pathname } = request.nextUrl;
@@ -34,9 +36,6 @@ export async function middleware(request: NextRequest) {
       const isSuperAdmin = userRoles.includes('SUPER_ADMIN');
       const isAdmin = userRoles.includes('ADMIN');
       const isSupport = userRoles.includes('SUPPORT');
-      // Define restricted routes for ADMIN and SUPPORT
-      const restrictedRoutesForAdmin = ['/admin-only'];
-      const restrictedRoutesForSupport = ['/support-only', '/admin-only'];
       //ROLLED ACCESS ROUTES
 
       // SUPER_ADMIN has access to all routes
@@ -48,12 +47,12 @@ export async function middleware(request: NextRequest) {
       }
 
       // If the user is ADMIN, check for restricted routes
-      if (isAdmin && restrictedRoutesForAdmin.includes(pathname)) {
+      if (isAdmin && accessRoutesForAdmin.includes(pathname)) {
         return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
       }
 
       // If the user is SUPPORT, check for restricted routes
-      if (isSupport && restrictedRoutesForSupport.includes(pathname)) {
+      if (isSupport && accessRoutesForSupport.includes(pathname)) {
         return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
       }
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import UserLog from '../../_components/UserLog';
+import UserLogs from '../../_components/UserLogs';
 
 const page = () => {
   return (
     <div className="bg-white dark:bg-darkBlue p-2 rounded-lg shadow-lg">
-      <UserLog />
+      <UserLogs />
     </div>
   );
 };

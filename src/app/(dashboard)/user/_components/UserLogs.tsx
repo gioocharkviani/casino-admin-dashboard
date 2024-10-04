@@ -1,13 +1,13 @@
 'use client';
-import { useEffect } from 'react';
 import Tables from '@/components/tables/Tables';
 import useTableStore from '@/store/useTableStore';
-import { getAllUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
+import { handleGetAuthCookie } from '@/utils/token';
+import React, { useEffect } from 'react';
+import { getUserLog } from '@/services';
 import { useParams } from 'next/navigation';
-import { TableOptions } from '@/components/tables/tableOptions.types';
 
-const UserLog = () => {
+const UserLogs = () => {
+  const params = useParams();
   const {
     page,
     perPage,
@@ -19,18 +19,14 @@ const UserLog = () => {
     setTotalItems,
   } = useTableStore();
 
-  const params = useParams();
-
   useEffect(() => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
         const apiUrl = `${backendUrl}/admin/users/${params.id}/logs`;
-        const userData = await getAllUser({ apiUrl, token });
-        setData(userData?.data);
-        setMaxPage(Math.ceil(userData?.total / userData?.per_page));
-        setTotalItems(userData?.total);
+        const userLog = await getUserLog({ apiUrl, token });
+        setData(userLog.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -39,7 +35,7 @@ const UserLog = () => {
     fetchData();
   }, [page, perPage, sortBy, sortDirection, setData, search]);
 
-  const tableOptions: TableOptions = {
+  const tableOptions = {
     search: true,
     select: true,
     filter: {
@@ -47,15 +43,15 @@ const UserLog = () => {
       filterBy: [],
     },
     saveData: true,
-    pagination: true,
+    pagination: false,
     sort: true,
     trclickaction: {
-      active: true,
-      link: '/user/logs',
-      component: null,
+      active: false,
+      link: '',
+      component: '',
     },
     settings: {
-      title: 'usersTable',
+      title: 'UserLogTable',
       active: true,
     },
     create: {
@@ -64,7 +60,7 @@ const UserLog = () => {
     },
     actions: {
       active: false,
-      edit: '/user/edit',
+      edit: '',
       remove: false,
     },
   };
@@ -76,4 +72,4 @@ const UserLog = () => {
   );
 };
 
-export default UserLog;
+export default UserLogs;

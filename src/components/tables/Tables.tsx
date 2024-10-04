@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { FaRegEdit } from 'react-icons/fa';
 import { IoIosSettings, IoMdAdd } from 'react-icons/io';
@@ -33,6 +33,7 @@ const Tables = ({ options }: TableProps) => {
     perPage,
     setSort,
     search,
+    setData,
     maxPage,
     setSearch,
     setPage,
@@ -44,10 +45,37 @@ const Tables = ({ options }: TableProps) => {
   const { setOpen, setChildren, setTitle } = useModalStore();
   const [allSelected, setAllSelected] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Retrieve settings from localStorage on initial load
+  useEffect(() => {
+    const storedSettings = localStorage.getItem(options.settings.title);
+    if (storedSettings) {
+      const parsedSettings = JSON.parse(storedSettings);
+      if (parsedSettings) {
+        setVisibleColumns(parsedSettings.visibleColumns);
+      }
+      if (parsedSettings.perPage) {
+        setPerPage(parsedSettings.perPage);
+      }
+    }
+    if (!storedSettings) {
+      setVisibleColumns([]);
+    }
+  }, []);
+
+  // Reset store values when the page changes
+  useEffect(() => {
+    setSelectedRows([]);
+    setData([]);
+    setSort('', 'asc');
+    setSearch('');
+  }, [pathname]);
+
   // Columns && rows
   const columns = data?.length > 0 ? Object.keys(data[0]) : [];
   const rowsData = data?.length > 0 ? data : [];
-  const colMap = visibleColumns.length === 0 ? columns : visibleColumns;
+  let colMap = visibleColumns.length === 0 ? columns : visibleColumns;
   // Columns && rows
 
   useEffect(() => {
@@ -113,14 +141,6 @@ const Tables = ({ options }: TableProps) => {
     </div>
   );
 
-  // Reset store values when the page changes
-  useEffect(() => {
-    setSelectedRows([]);
-    setSort('', 'asc');
-    setSearch('');
-    setVisibleColumns(columns);
-  }, [page]);
-
   // Handle setting opening and apply child element
   const setting = () => {
     setTempVisibleColumns(colMap);
@@ -129,22 +149,6 @@ const Tables = ({ options }: TableProps) => {
     setTitle('Table settings');
     setChildren(childElement);
   };
-
-  // Retrieve settings from localStorage on initial load
-  useEffect(() => {
-    const storedSettings = localStorage.getItem(options.settings.title);
-    if (storedSettings) {
-      const parsedSettings = JSON.parse(storedSettings);
-      if (parsedSettings.visibleColumns) {
-        setVisibleColumns(parsedSettings.visibleColumns);
-      }
-      if (parsedSettings.perPage) {
-        setPerPage(parsedSettings.perPage);
-      }
-    } else {
-      setVisibleColumns(columns);
-    }
-  }, []);
 
   // Update child element whenever temp states change
   useEffect(() => {
@@ -408,7 +412,7 @@ const Tables = ({ options }: TableProps) => {
                       <td className="text-sm" key={col}>
                         {col === 'roles' && row[col] && row[col].length > 0 ? (
                           // Check if the column is 'roles' and roles array is not empty
-                          <span>{row[col][0].name}</span>
+                          <span>{row[col][0]}</span>
                         ) : row[col] === undefined ? (
                           'undefined'
                         ) : row[col] === null ? (

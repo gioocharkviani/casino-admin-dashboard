@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import { userLogin } from '@/services';
 import { handleSetAuthCookie } from '@/utils/token';
+import { currentUser } from '@/services';
+import useUserStore from '@/store/useUserStore';
 
 export default function AdminLogin() {
   const [userName, setUserName] = useState('');
@@ -11,6 +13,7 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); // Loading state
   const router = useRouter();
+  const { setUser } = useUserStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +25,8 @@ export default function AdminLogin() {
       const res = await userLogin(signInBody);
       if (res.statusCode === 200) {
         handleSetAuthCookie(res.data.data.access_token);
+        const user = await currentUser(res.data.data.access_token);
+        setUser(user.data.data);
         router.refresh();
       } else if (res.statusCode === 403) {
         setError('Invalid Credentials');
