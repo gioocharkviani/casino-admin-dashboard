@@ -1,10 +1,11 @@
 'use client';
 interface ButtonProps {
   children?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   disable?: boolean;
   error?: string | null;
   icon?: any;
+  type?: any;
 }
 
 const Button = ({
@@ -12,6 +13,7 @@ const Button = ({
   onClick,
   disable = true,
   error,
+  type,
   icon,
   ...rest
 }: ButtonProps) => {
@@ -19,9 +21,10 @@ const Button = ({
   return (
     <button
       onClick={onClick}
+      type={type}
       disabled={!disable}
       {...rest}
-      className={`w-full text-sm px-3 py-2 text-white flex items-center gap-2 justify-center capitalize rounded-sm transition-colors 
+      className={`w-full text-sm text-nowrap px-3 py-2 text-white flex items-center gap-2 justify-center capitalize rounded-sm transition-colors 
             ${
               !disable
                 ? 'bg-gray-400 cursor-not-allowed'

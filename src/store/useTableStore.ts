@@ -35,12 +35,7 @@ const useTableStore = create<TableState>((set) => ({
   selectedRows: [],
 
   // Function implementations
-  setData: (data) => {
-    set({
-      data,
-    });
-  },
-
+  setData: (data) => set({ data }),
   setPage: (page) => set({ page }),
   setPerPage: (perPage) => set({ perPage }),
   setSort: (sortBy, sortDirection) => set({ sortBy, sortDirection }),

@@ -3,12 +3,36 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { FaEye } from 'react-icons/fa';
+import useModalStore from '@/store/useModalStore';
+import Selector from '@/components/ui/Selector';
+import useSelectorStore from '@/store/useSelectorStore';
 
 const CreateNotifi = () => {
-  const [selectedValue, setSelectedValue] = useState('');
+  const { setOpen, setChildren } = useModalStore(); // Modal store to open/close the modal
 
+  // Example user data
+  const users = [
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Smith' },
+    { id: 3, name: 'Jane Smith' },
+    { id: 4, name: 'Jane Smith' },
+    { id: 5, name: 'Jane Smith' },
+    { id: 654, name: 'Jane Smith' },
+    { id: 634, name: 'Jane Smith' },
+    { id: 663, name: 'Jane Smith' },
+    { id: 623, name: 'Jane Smith' },
+    { id: 65, name: 'Jane Smith' },
+  ];
+
+  // Function to open modal with selector
+  const openUserSelector = () => {
+    setChildren(<Selector data={users} displayKey="name" uniqueKey="id" />);
+    setOpen();
+  };
+
+  // Dropdown options
   const options = [
     { value: 'NOTIFI', label: 'Notifi' },
     { value: 'POPUP', label: 'Popup' },
@@ -17,29 +41,37 @@ const CreateNotifi = () => {
   return (
     <div className="w-full">
       <form className="flex flex-col gap-5">
-        <div className="flex gap-5 flex-col md:flex-row">
-          <Input type="text" label="Recipient id" />
+        <div className="w-max">
+          <Button type="button" onClick={openUserSelector}>
+            Select Users
+          </Button>
+        </div>
+        <div className="flex gap-5 justify-center items-center flex-col md:flex-row">
           <Select
             label="Select an option"
             name="selectField"
-            options={[
-              { label: 'Option 1', value: '1' },
-              { label: 'Option 2', value: '2' },
-              { label: 'Option 3', value: '3' },
-            ]}
+            options={options}
             placeholder="Choose..."
             onChange={(value) => console.log(value)}
           />
         </div>
+
+        {/* Textarea for the content */}
         <div>
-          <Textarea label="content" />
+          <Textarea label="Content" />
         </div>
+
+        {/* Preview button */}
         <div className="w-max">
-          <Button icon={FaEye}>preview</Button>
+          <Button icon={FaEye}>Preview</Button>
         </div>
+
+        {/* Date input for the trigger */}
         <div>
-          <Input label="trigger" type="date" />
+          <Input label="Trigger Date" type="date" />
         </div>
+
+        {/* Create Notification button */}
         <div>
           <Button>Create</Button>
         </div>
