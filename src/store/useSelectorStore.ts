@@ -1,13 +1,14 @@
-import { create } from 'zustand';
+import create from 'zustand';
 
 interface SelectorStore<T> {
   selectorData: T[];
-  selectedItem: T[];
   filteredData: T[];
+  selectedItem: T[];
   setSelectorData: (data: T[]) => void;
   setFilteredData: (data: T[]) => void;
   addSelectedItem: (item: T) => void;
-  removeSelectedItem: (id: any) => void;
+  removeSelectedItem: (id: string | number) => void;
+  resetSelectedItems: () => void; // Reset selected items
 }
 
 const useSelectorStore = create<SelectorStore<any>>((set) => ({
@@ -34,6 +35,9 @@ const useSelectorStore = create<SelectorStore<any>>((set) => ({
     set((state) => ({
       selectedItem: state.selectedItem.filter((item) => item.id !== id),
     })),
+
+  // New function to reset selected items
+  resetSelectedItems: () => set({ selectedItem: [] }), // Reset selected items
 }));
 
 export default useSelectorStore;

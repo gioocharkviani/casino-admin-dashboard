@@ -40,7 +40,7 @@ const NotifiList = () => {
     fetchData();
   }, [page, perPage, sortBy, sortDirection, setData, search]);
 
-  const tableOptions = {
+  const tableOptions: any = {
     search: true,
     select: true,
     filter: {
@@ -65,8 +65,9 @@ const NotifiList = () => {
     },
     actions: {
       active: true,
+      actions: [],
       edit: '/notification/edit',
-      remove: false,
+      remove: true,
     },
   };
 

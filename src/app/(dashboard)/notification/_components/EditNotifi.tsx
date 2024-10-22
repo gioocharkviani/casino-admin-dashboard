@@ -6,28 +6,26 @@ import Textarea from '@/components/ui/Textarea';
 import React, { useEffect, useState } from 'react';
 import { FaEye } from 'react-icons/fa';
 import useModalStore from '@/store/useModalStore';
-import Selector from '@/components/ui/Selector';
 import useSelectorStore from '@/store/useSelectorStore';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { api } from '@/config';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 type Inputs = {
-  title: string;
-  recipientIds: number[] | string[];
+  recipientIds: number | string[];
   content: string;
   trigerAt: string | null;
   category: string | number;
 };
 
-const CreateNotifi = () => {
+const EditNotifi = () => {
+  const searchparams = useSearchParams();
+
   const { setOpen, setChildren, setTitle } = useModalStore();
   const { selectedItem, addSelectedItem, resetSelectedItems } =
     useSelectorStore();
-  const router = useRouter();
   const {
     handleSubmit,
     control,
@@ -36,7 +34,6 @@ const CreateNotifi = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      title: '',
       recipientIds: [],
       content: '',
       trigerAt: null,
@@ -52,72 +49,61 @@ const CreateNotifi = () => {
     setOpen();
   };
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    toast.promise(
-      (async () => {
-        if (!data.trigerAt) {
-          data.trigerAt = null;
-        }
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
-        // Make API request with form data
+  useEffect(() => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
+    const editData = async () => {
+      try {
         const token = await handleGetAuthCookie();
+        const notifyId = searchparams.get('id');
         const response = await api({
-          url: `${backendUrl}/notification/create`,
-          method: 'POST',
-          body: data,
+          url: `${backendUrl}/notification/${notifyId}`,
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        // Handle the response
-        if (response.statusCode === 201) {
-          resetSelectedItems();
-          reset();
-          return 'Notification sent successfully!';
+        setValue('category', response.data?.category);
+        setValue('content', response.data?.content);
+        setValue('recipientIds', response.data?.recipientId);
+        setValue('trigerAt', response.data?.trigerAt);
+      } catch (error) {}
+    };
+    editData();
+  }, []);
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
+    const token = await handleGetAuthCookie();
+    const notifyId = searchparams.get('id');
+    toast.promise(
+      (async () => {
+        const response = await api({
+          url: `${backendUrl}/notification/${notifyId}`,
+          method: 'PATCH',
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.statusCode === 200) {
+          return 'Notification edit successfully!';
         } else {
           throw new Error(response.message);
         }
       })(),
       {
-        pending: 'Sending notification...',
-        success: 'Notification sent successfully! 👌',
-        error: 'Failed to send notification. 🤯',
+        pending: 'editing notification...',
+        success: 'Notification edit successfully! 👌',
+        error: 'Failed to edit notification. 🤯',
       }
     );
   };
 
-  useEffect(() => {
-    const modifiedSelectedItem = selectedItem.map((i) => i.id);
-    setValue('recipientIds', modifiedSelectedItem);
-  }, [selectedItem]);
-
-  // Fetch user data
-  const [userList, setUserList] = useState([]);
-
-  useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
-    const fetchData = async () => {
-      try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users?per_page=99999999`;
-        const userData = await getAllUser({ apiUrl, token });
-        setUserList(userData.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Function to open modal with selector
-  const openUserSelector = () => {
-    setChildren(
-      <Selector data={userList} displayKey="user_name" uniqueKey="id" />
-    );
-    setTitle('Select user');
-    setOpen();
+  const formatDateTimeLocal = (date: string | null) => {
+    if (!date) return '';
+    const dt = new Date(date);
+    return dt.toISOString().slice(0, 16);
   };
 
   // Dropdown options
@@ -129,42 +115,6 @@ const CreateNotifi = () => {
   return (
     <div className="w-full">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Date input for the trigger */}
-        <div>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field }) => (
-              <Input
-                error={errors.title?.message}
-                label="title"
-                type="text"
-                {...field}
-                value={field.value || ''}
-                onChange={(e) => field.onChange(e.target.value || null)}
-              />
-            )}
-          />
-        </div>
-
-        <div className="w-max">
-          <Controller
-            name="recipientIds"
-            control={control}
-            rules={{ required: 'Users are required' }}
-            render={({ field }) => (
-              <Button type="button" onClick={openUserSelector}>
-                Select Users
-              </Button>
-            )}
-          />
-          {errors.recipientIds && (
-            <p className="text-red-500 text-sm my-2">
-              {errors.recipientIds.message}
-            </p>
-          )}
-        </div>
-
         <div className="flex gap-5 justify-center items-center flex-col md:flex-row">
           <Controller
             name="category"
@@ -175,6 +125,7 @@ const CreateNotifi = () => {
                 label="Select an Option"
                 name="category"
                 options={options}
+                defaultValue={field.value}
                 placeholder="Select an option"
                 error={errors.category?.message}
                 onChange={(value) => field.onChange(value)}
@@ -227,7 +178,7 @@ const CreateNotifi = () => {
                 label="Trigger Date"
                 type="datetime-local"
                 {...field}
-                value={field.value || ''}
+                value={field.value ? formatDateTimeLocal(field.value) : ''}
                 onChange={(e) => field.onChange(e.target.value || null)}
               />
             )}
@@ -236,11 +187,11 @@ const CreateNotifi = () => {
 
         {/* Create Notification button */}
         <div>
-          <Button>Create</Button>
+          <Button type="submit">Edit</Button>
         </div>
       </form>
     </div>
   );
 };
 
-export default CreateNotifi;
+export default EditNotifi;

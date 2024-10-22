@@ -105,6 +105,7 @@ input[type='checkbox'] {
 /*=========DATA TABLES ==========*/
 .table-container::-webkit-scrollbar {
   height: 5px;
+  width: 5px;
 }
 
 .table-container table thead tr {
@@ -121,6 +122,9 @@ input[type='checkbox'] {
   min-width: max-content;
   padding: 8px;
 }
+.table-container {
+  overflow-x: auto;
+}
 
 .table-container table tbody tr td {
   padding: 8px;
@@ -128,7 +132,6 @@ input[type='checkbox'] {
   max-width: 300px;
   white-space: nowrap;
   font-weight: 400;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 

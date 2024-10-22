@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 
 interface Option {
@@ -13,19 +13,23 @@ interface SelectProps {
   error?: string | null;
   placeholder?: string;
   onChange: (value: string | number) => void;
+  resetSelect?: boolean;
+  defaultValue?: string | number;
 }
 
-const Select: React.FC<SelectProps> = ({
+const Select = ({
   label,
   name,
   options,
   error,
   placeholder,
   onChange,
-}) => {
+  resetSelect,
+  defaultValue,
+}: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<string | number>('');
+  const [selected, setSelected] = useState<string | number>(defaultValue || ''); // Initialize with default value
 
   const handleSelect = (option: Option) => {
     setSelected(option.value);
@@ -37,8 +41,22 @@ const Select: React.FC<SelectProps> = ({
     option.label.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Reset logic: when resetSelect changes to true, clear the selection and search
+  useEffect(() => {
+    if (resetSelect) {
+      setSelected(defaultValue || ''); // Reset to default value
+      setSearch('');
+    }
+  }, [resetSelect, defaultValue]);
+
+  // Set selected value when defaultValue changes
+  useEffect(() => {
+    setSelected(defaultValue || '');
+  }, [defaultValue]);
+
   return (
     <div className="relative w-full">
+      {/* Label */}
       {label && (
         <label
           htmlFor={name}
@@ -49,16 +67,16 @@ const Select: React.FC<SelectProps> = ({
           {label}
         </label>
       )}
+
+      {/* Select Button */}
       <div className="relative">
         <button
           type="button"
-          className={`w-full px-3 py-2 border dark:bg-transparent dark:text-white border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 text-left focus:border-indigo-500 sm:text-sm flex justify-between items-center
-            ${
-              error
-                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-                : ''
-            }
-          `}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm flex justify-between items-center text-left transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm ${
+            error
+              ? 'border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500'
+              : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-700 dark:bg-transparent dark:text-white'
+          }`}
           onClick={() => setIsOpen(!isOpen)}
         >
           <span>
@@ -74,13 +92,20 @@ const Select: React.FC<SelectProps> = ({
             <IoIosArrowForward />
           </div>
         </button>
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
 
+        {/* Error Message */}
+        {error && (
+          <p className="mt-1 text-sm text-red-500" role="alert">
+            {error}
+          </p>
+        )}
+
+        {/* Dropdown Options */}
         {isOpen && (
           <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto">
             <input
               type="text"
-              className="w-full px-3 py-2 border-b dark:bg-transparent dark:text-white border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-3 py-2 border-b dark:bg-transparent focus:outline-none sm:text-sm"
               placeholder="Search..."
               autoFocus
               value={search}

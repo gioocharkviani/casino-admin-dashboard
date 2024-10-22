@@ -15,7 +15,7 @@ const Button = ({
   error,
   type,
   icon,
-  ...rest
+  ...props
 }: ButtonProps) => {
   const Icon = icon;
   return (
@@ -23,7 +23,7 @@ const Button = ({
       onClick={onClick}
       type={type}
       disabled={!disable}
-      {...rest}
+      {...props}
       className={`w-full text-sm text-nowrap px-3 py-2 text-white flex items-center gap-2 justify-center capitalize rounded-sm transition-colors 
             ${
               !disable

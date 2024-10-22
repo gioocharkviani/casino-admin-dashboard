@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Header from '@/components/header/Header';
 import Modal from '@/components/modal/Modal';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: 'CASINO ADMIN',
@@ -15,6 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <main className="w-full flex dark:text-white relative min-h-screen">
+      <ToastContainer />
       <Modal />
       <Sidebar />
       <div className="w-full ml-[60px] overflow-x-hidden p-2 flex flex-col">

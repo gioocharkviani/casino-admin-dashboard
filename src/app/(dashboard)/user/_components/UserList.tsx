@@ -47,7 +47,7 @@ const UserList = () => {
     pagination: true,
     sort: true,
     trclickaction: {
-      active: true,
+      active: false,
       link: '/user/logs',
       component: null,
     },
@@ -60,9 +60,30 @@ const UserList = () => {
       link: '',
     },
     actions: {
-      active: false,
-      edit: '/user/edit',
-      remove: false,
+      active: true,
+      actions: [
+        {
+          name: 'remove',
+          type: 'MODAL',
+          icon: null,
+          link: '',
+          component: '',
+        },
+        {
+          name: 'remove',
+          type: 'MODAL',
+          icon: null,
+          link: '',
+          component: '',
+        },
+        {
+          name: 'remove',
+          type: 'MODAL',
+          icon: null,
+          link: '',
+          component: '',
+        },
+      ],
     },
   };
 

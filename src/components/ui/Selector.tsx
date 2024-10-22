@@ -10,9 +10,15 @@ interface SelectorProps<T> {
   data: T[];
   displayKey: keyof T;
   uniqueKey: keyof T;
+  error?: string; // Add error prop
 }
 
-const Selector = <T,>({ data, displayKey, uniqueKey }: SelectorProps<T>) => {
+const Selector = <T,>({
+  data,
+  displayKey,
+  uniqueKey,
+  error,
+}: SelectorProps<T>) => {
   const {
     selectorData,
     setSelectorData,
@@ -25,11 +31,16 @@ const Selector = <T,>({ data, displayKey, uniqueKey }: SelectorProps<T>) => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const mapData = filteredData.length > 0 ? filteredData : selectorData;
+  // Update local state when selectedItem changes
+  const [mappedData, setMappedData] = useState<T[]>([]);
 
   useEffect(() => {
     setSelectorData(data);
   }, [data, setSelectorData]);
+
+  useEffect(() => {
+    setMappedData(filteredData.length > 0 ? filteredData : selectorData);
+  }, [selectedItem, filteredData, selectorData]);
 
   const selectItem = (item: T) => {
     addSelectedItem(item);
@@ -60,8 +71,28 @@ const Selector = <T,>({ data, displayKey, uniqueKey }: SelectorProps<T>) => {
     }
   };
 
+  //SELECTED ITEM MAP
+  let SelectedItemMap = selectedItem.map((i: any) => (
+    <li
+      key={i[uniqueKey]}
+      onClick={() => removeFromSelected(i[uniqueKey])}
+      className="bg-white flex justify-between dark:hover:bg-bs-dark items-center dark:bg-darkBlue py-2 px-3 hover:bg-slate-100 text-sm rounded-md shadow-lg cursor-pointer"
+    >
+      {i[displayKey]}
+      <IoClose className="text-red-500" />
+    </li>
+  ));
+
+  useEffect(() => {
+    SelectedItemMap;
+  }, [selectedItem]);
+  //SELECTED ITEM MAP
+
   return (
     <div className="flex flex-col w-full h-[70vh] gap-4 selector">
+      {/* Display error message if there is one */}
+      {error && <p className="text-red-500">{error}</p>}
+
       <div className="flex justify-center items-center gap-4">
         <Checkbox1
           label="Select All"
@@ -78,18 +109,18 @@ const Selector = <T,>({ data, displayKey, uniqueKey }: SelectorProps<T>) => {
 
       <div className="flex gap-3 flex-col lg:flex-row w-full h-full pb-4">
         {/* Filtered Data List */}
-        <div className="bg-white dark:bg-darkBg overflow-y-auto max-h-[280px] h-full rounded-md shadow-lg p-2 w-full">
+        <div className="bg-white dark:bg-darkBg overflow-y-auto max-h-[300px] h-full rounded-md shadow-lg p-2 w-full">
           <ul className="flex flex-col gap-2">
             {searchQuery && filteredData.length === 0 ? (
               <li className="text-center text-gray-500">
                 No results found for "{searchQuery}".
               </li>
-            ) : mapData.length > 0 ? (
-              mapData.map((i: any) => (
+            ) : mappedData.length > 0 ? (
+              mappedData.map((i: any) => (
                 <li
                   key={i[uniqueKey]}
                   onClick={() => selectItem(i)}
-                  className={`bg-white flex justify-between items-center dark:bg-darkBlue py-2 px-3 hover:bg-slate-100 text-sm rounded-md shadow-lg cursor-pointer`}
+                  className={`bg-white flex dark:hover:bg-bs-dark justify-between items-center dark:bg-darkBlue py-2 px-3 hover:bg-slate-100 text-sm rounded-md shadow-lg cursor-pointer`}
                 >
                   {i[displayKey]}
                   {selectedItem.some(
@@ -104,28 +135,15 @@ const Selector = <T,>({ data, displayKey, uniqueKey }: SelectorProps<T>) => {
         </div>
 
         {/* Selected Items List */}
-        <div className="bg-white dark:bg-darkBg rounded-md overflow-y-auto max-h-[280px] shadow-lg p-2 w-full h-full">
+        <div className="bg-white dark:bg-darkBg rounded-md overflow-y-auto max-h-[300px] shadow-lg p-2 w-full h-full">
           <ul className="flex flex-col gap-2">
             {selectedItem.length > 0 ? (
-              selectedItem.map((i: any) => (
-                <li
-                  key={i[uniqueKey]}
-                  onClick={() => removeFromSelected(i[uniqueKey])}
-                  className="bg-white flex justify-between items-center dark:bg-darkBlue py-2 px-3 hover:bg-slate-100 text-sm rounded-md shadow-lg cursor-pointer"
-                >
-                  {i[displayKey]}
-                  <IoClose className="text-red-500" />
-                </li>
-              ))
+              SelectedItemMap
             ) : (
               <li className="text-center text-gray-500">No items selected.</li>
             )}
           </ul>
         </div>
-      </div>
-
-      <div>
-        <Button>Choose</Button>
       </div>
     </div>
   );

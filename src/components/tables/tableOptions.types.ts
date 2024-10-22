@@ -21,10 +21,19 @@ export interface CreateAction {
   link: string;
 }
 
+export interface ActionsTypes {
+  name?: string;
+  type?: 'LINK' | 'MODAL';
+  icon?: HTMLImageElement | null;
+  link?: string;
+  component?: any;
+}
+
 export interface Actions {
   active: boolean;
-  edit: string;
-  remove: boolean;
+  actions?: ActionsTypes[];
+  edit?: string;
+  remove?: boolean;
 }
 
 export interface TableOptions {

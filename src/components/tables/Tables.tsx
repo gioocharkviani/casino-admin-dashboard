@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { FaRegEdit } from 'react-icons/fa';
 import { IoIosSettings, IoMdAdd } from 'react-icons/io';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi';
-import Link1 from '../ui/Link1';
-import Button from '../ui/Button';
 import { IoFilter, IoSave } from 'react-icons/io5';
-import Input from '../ui/Input';
 import * as XLSX from 'xlsx';
-
 import useTableStore from '@/store/useTableStore';
 import useModalStore from '@/store/useModalStore';
-import Checkbox1 from '../ui/Checkbox1';
 import Link from 'next/link';
-import Checkbox from '../ui/Checkbox';
 import { TableOptions } from './tableOptions.types';
+import { Input, Button, Link1, Checkbox, Checkbox1 } from '../ui';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { FaRegEdit } from 'react-icons/fa';
+import { BsThreeDots } from 'react-icons/bs';
 
 interface TableProps {
   options: TableOptions;
@@ -212,6 +208,11 @@ const Tables = ({ options }: TableProps) => {
       router.push(`${options.trclickaction.link}/${id}`);
     }
   };
+
+  const [actionMenu, setActionMenu] = useState<number | string | null>(null);
+  const showAction = (id: number | string) => {
+    setActionMenu((prev) => (prev === id ? null : id));
+  };
   //TRCLICKACTION
 
   // SEARCH
@@ -335,10 +336,10 @@ const Tables = ({ options }: TableProps) => {
             <p className="text-gray-500">No data available.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto pb-5 mt-5 border rounded-md shadow-lg table-container">
+          <div className=" pb-5 mt-5 border rounded-md shadow-lg table-container">
             <table
               id="data-table"
-              className="min-w-full w-max text-left table-auto border-collapse"
+              className="min-w-full w-max text-left  border-collapse"
             >
               {/* TABLE HEAD */}
               <thead>
@@ -427,21 +428,33 @@ const Tables = ({ options }: TableProps) => {
                     {/* ACTIONS */}
                     {options.actions.active && (
                       <td>
-                        <div className="w-full relative flex gap-2 justify-end items-center h-full">
-                          {options.actions.edit && (
-                            <Link href={`${options.actions.edit}?id=${row.id}`}>
-                              <FaRegEdit
-                                title="edit"
-                                className="cursor-pointer hover:text-indigo-500"
-                              />
-                            </Link>
-                          )}
-                          {options.actions.remove && (
-                            <AiOutlineDelete
-                              title="remove"
-                              className="cursor-pointer hover:text-red-500"
+                        <div className="w-full flex gap-2 justify-end items-center h-full">
+                          <div className="relative">
+                            <BsThreeDots
+                              className=" cursor-pointer"
+                              onClick={() => showAction(row.id)}
                             />
-                          )}
+                            {actionMenu === row.id && (
+                              <div
+                                className={`${
+                                  actionMenu === row.id
+                                    ? 'opacity-1'
+                                    : 'opacity-0'
+                                } absolute right-0 rounded-md p-1 bg-white shadow-lg min-w-[100px] dark:bg-darkBlue border transition-all dark:border-darkBg top-[100%] z-[99]`}
+                              >
+                                <ul className="flex flex-col">
+                                  {options.actions.actions?.map((i) => (
+                                    <li
+                                      key={i.name}
+                                      className="px-1 py-1 cursor-pointer text-sm capitalize hover:bg-[#d7d7d7] dark:hover:bg-darkHover rounded-md"
+                                    >
+                                      {i.name}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </td>
                     )}
