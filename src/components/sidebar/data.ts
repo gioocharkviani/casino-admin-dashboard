@@ -21,7 +21,11 @@ export const data = [
       },
       {
         text: 'deactivated users',
-        link: '/user',
+        link: '/user/deactivated',
+      },
+      {
+        text: 'blackList',
+        link: '/user/blacklist',
       },
     ],
   },

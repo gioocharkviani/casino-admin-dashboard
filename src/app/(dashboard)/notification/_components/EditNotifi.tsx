@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { useSearchParams } from 'next/navigation';
 
 type Inputs = {
+  title: string;
   recipientIds: number | string[];
   content: string;
   trigerAt: string | null;
@@ -34,6 +35,7 @@ const EditNotifi = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
+      title: '',
       recipientIds: [],
       content: '',
       trigerAt: null,
@@ -62,7 +64,7 @@ const EditNotifi = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        setValue('title', response.data.title);
         setValue('category', response.data?.category);
         setValue('content', response.data?.content);
         setValue('recipientIds', response.data?.recipientId);
@@ -115,6 +117,22 @@ const EditNotifi = () => {
   return (
     <div className="w-full">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <Input
+                error={errors.title?.message}
+                label="title"
+                type="text"
+                {...field}
+                value={field.value || ''}
+                onChange={(e) => field.onChange(e.target.value || null)}
+              />
+            )}
+          />
+        </div>
         <div className="flex gap-5 justify-center items-center flex-col md:flex-row">
           <Controller
             name="category"

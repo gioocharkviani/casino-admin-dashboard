@@ -7,11 +7,8 @@ import { IoFilter, IoSave } from 'react-icons/io5';
 import * as XLSX from 'xlsx';
 import useTableStore from '@/store/useTableStore';
 import useModalStore from '@/store/useModalStore';
-import Link from 'next/link';
 import { TableOptions } from './tableOptions.types';
 import { Input, Button, Link1, Checkbox, Checkbox1 } from '../ui';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { FaRegEdit } from 'react-icons/fa';
 import { BsThreeDots } from 'react-icons/bs';
 
 interface TableProps {
@@ -165,7 +162,7 @@ const Tables = ({ options }: TableProps) => {
   const saveAs = () => {
     // Filter only selected rows
     const selectedRowsData = rowsData.filter((row: any) =>
-      selectedRows.includes(row.id)
+      selectedRows.includes(row.options.UniqueKey)
     );
     const exportData = selectedRowsData.map((row: any) => {
       const rowData: any = {};
@@ -202,18 +199,22 @@ const Tables = ({ options }: TableProps) => {
   };
   // SORT FUNCTION
 
-  //TRCLICKACTION
-  const trClickHandler = (id: string | number) => {
-    if (options.trclickaction.active) {
-      router.push(`${options.trclickaction.link}/${id}`);
-    }
+  //ACTIONS
+  const actionLinkHendler = (link: any, id: string | number) => {
+    router.push(`${link}${id}`);
+  };
+
+  const actionBtn = ({ title, component, rowId }: any) => {
+    setOpen();
+    setTitle(title);
+    setChildren(component);
   };
 
   const [actionMenu, setActionMenu] = useState<number | string | null>(null);
   const showAction = (id: number | string) => {
     setActionMenu((prev) => (prev === id ? null : id));
   };
-  //TRCLICKACTION
+  //ACTIONS
 
   // SEARCH
   const [debounceValue, setDebounceValue] = useState('');
@@ -390,11 +391,8 @@ const Tables = ({ options }: TableProps) => {
               <tbody>
                 {rowsData.map((row: any) => (
                   <tr
-                    onClick={() => trClickHandler(row.id)}
                     key={row.id}
-                    className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg ${
-                      options.trclickaction.active ? 'cursor-pointer' : ''
-                    }`}
+                    className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}
                   >
                     {/* CHECKBOX FOR SELECT EACH ROW */}
                     {options.select && (
@@ -448,7 +446,32 @@ const Tables = ({ options }: TableProps) => {
                                       key={i.name}
                                       className="px-1 py-1 cursor-pointer text-sm capitalize hover:bg-[#d7d7d7] dark:hover:bg-darkHover rounded-md"
                                     >
-                                      {i.name}
+                                      {i.type === 'MODAL' && (
+                                        <button
+                                          onClick={() =>
+                                            actionBtn({
+                                              title: i.name,
+                                              component: i.component,
+                                              rowId: row.id,
+                                            })
+                                          }
+                                          className="capitalize flex items-center gap-2"
+                                        >
+                                          {i?.icon}
+                                          {i.name}
+                                        </button>
+                                      )}
+                                      {i?.type === 'LINK' && (
+                                        <button
+                                          className="capitalize flex items-center gap-2"
+                                          onClick={() =>
+                                            actionLinkHendler(i.link, row.id)
+                                          }
+                                        >
+                                          {i?.icon}
+                                          {i.name}
+                                        </button>
+                                      )}
                                     </li>
                                   ))}
                                 </ul>

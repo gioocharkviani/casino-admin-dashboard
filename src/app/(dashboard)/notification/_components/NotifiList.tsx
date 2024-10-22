@@ -5,6 +5,8 @@ import { getAllNotification } from '@/services/notification.service';
 import useTableStore from '@/store/useTableStore';
 import { handleGetAuthCookie } from '@/utils/token';
 import React, { useEffect } from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { FaRegEdit } from 'react-icons/fa';
 
 const NotifiList = () => {
   const {
@@ -65,9 +67,22 @@ const NotifiList = () => {
     },
     actions: {
       active: true,
-      actions: [],
-      edit: '/notification/edit',
-      remove: true,
+      actions: [
+        {
+          name: 'remove',
+          type: 'MODAL',
+          icon: <AiOutlineDelete />,
+          link: '',
+          component: '',
+        },
+        {
+          name: 'edit',
+          type: 'LINK',
+          icon: <FaRegEdit />,
+          link: '/notification/edit?id=',
+          component: '',
+        },
+      ],
     },
   };
 

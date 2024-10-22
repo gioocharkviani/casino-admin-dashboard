@@ -6,7 +6,7 @@ import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
 
-const UserList = () => {
+const BlackListUsers = () => {
   const {
     page,
     perPage,
@@ -23,7 +23,7 @@ const UserList = () => {
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
+        const apiUrl = `${backendUrl}/admin/blacklist?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
         setMaxPage(Math.ceil(userData?.meta.total / userData?.meta.per_page));
@@ -48,7 +48,7 @@ const UserList = () => {
     pagination: true,
     sort: true,
     settings: {
-      title: 'usersTable',
+      title: 'blackListUsers',
       active: true,
     },
     create: {
@@ -56,13 +56,13 @@ const UserList = () => {
       link: '',
     },
     actions: {
-      active: true,
+      active: false,
       actions: [
         {
-          name: 'user logs',
-          type: 'LINK',
-          link: '/user/logs/',
+          name: 'remove',
+          type: 'MODAL',
           icon: null,
+          link: '',
           component: '',
         },
       ],
@@ -76,4 +76,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default BlackListUsers;

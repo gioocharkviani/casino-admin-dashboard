@@ -5,12 +5,6 @@ export interface FilterOptions {
   filterBy: string[]; // Adjust the type if filterBy can be other types
 }
 
-export interface TrClickAction {
-  active: boolean;
-  link: string;
-  component: any; // Adjust type based on expected component type
-}
-
 export interface Settings {
   title: string;
   active: boolean;
@@ -24,8 +18,8 @@ export interface CreateAction {
 export interface ActionsTypes {
   name?: string;
   type?: 'LINK' | 'MODAL';
-  icon?: HTMLImageElement | null;
-  link?: string;
+  icon?: any | null;
+  link?: any;
   component?: any;
 }
 
@@ -43,8 +37,8 @@ export interface TableOptions {
   saveData: boolean;
   pagination: boolean;
   sort: boolean;
-  trclickaction: TrClickAction;
   settings: Settings;
   create: CreateAction;
+  uniqueKey?: string;
   actions: Actions;
 }
