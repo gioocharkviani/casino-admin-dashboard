@@ -35,7 +35,7 @@ const Tables = ({ options }: TableProps) => {
     setSelectedRows,
     setVisibleColumns,
   } = useTableStore();
-  const { setOpen, setChildren, setTitle } = useModalStore();
+  const { setOpen, setChildren, setTitle, isOpen } = useModalStore();
   const [allSelected, setAllSelected] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -204,9 +204,10 @@ const Tables = ({ options }: TableProps) => {
     router.push(`${link}${id}`);
   };
 
-  const actionBtn = ({ title, component, rowId }: any) => {
+  const actionBtn = ({ title, Comp, rowId }: any) => {
     setOpen();
     setTitle(title);
+    const component = <Comp id={rowId} />;
     setChildren(component);
   };
 
@@ -451,7 +452,7 @@ const Tables = ({ options }: TableProps) => {
                                           onClick={() =>
                                             actionBtn({
                                               title: i.name,
-                                              component: i.component,
+                                              Comp: i.component,
                                               rowId: row.id,
                                             })
                                           }

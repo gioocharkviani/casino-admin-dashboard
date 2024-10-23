@@ -1,4 +1,7 @@
 import { api } from '@/config';
+import { handleGetAuthCookie } from '@/utils/cookies';
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
 
 // GET ALL USER
 export const getAllUser = async ({
@@ -93,5 +96,28 @@ export const currentUser = async (token: string) => {
       message: error.response?.data?.message || 'Internal server error',
       data: null,
     };
+  }
+};
+
+// DEACTIVE USER Service
+export const deactiveUser = async ({ data }: any) => {
+  console.log(data);
+  try {
+    const token = await handleGetAuthCookie();
+    const response = await fetch(`${backendUrl}/admin/deactivated-users`, {
+      body: JSON.stringify(data),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    // Handle error and display appropriate feedback
+    console.error('Error deactivating user:', error.message);
+    throw new Error(error.message || 'An unexpected error occurred');
   }
 };

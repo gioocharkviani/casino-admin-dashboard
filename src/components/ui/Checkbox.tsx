@@ -1,6 +1,6 @@
-"use client";
-import React from "react";
-import { FaCheck } from "react-icons/fa";
+'use client';
+import React from 'react';
+import { FaCheck } from 'react-icons/fa';
 
 interface CheckboxProps {
   id: string;
@@ -10,9 +10,9 @@ interface CheckboxProps {
 
 const Checkbox = ({ id, checked, onChange }: CheckboxProps) => {
   return (
-    <div className={`customCheckbox1 ${checked ? "checkedCustom1" : ""}`}>
+    <div className={`customCheckbox1 ${checked ? 'checkedCustom1' : ''}`}>
       <label htmlFor={id}>
-        <FaCheck className={`${checked ? "cusCheckIcon" : "cusUnCheckIcon"}`} />
+        <FaCheck className={`${checked ? 'cusCheckIcon' : 'cusUnCheckIcon'}`} />
       </label>
       <input onChange={onChange} id={id} type="checkbox" checked={checked} />
     </div>

@@ -5,6 +5,7 @@ import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
+import DeactiveUser from './DeactiveUser';
 
 const UserList = () => {
   const {
@@ -64,6 +65,13 @@ const UserList = () => {
           link: '/user/logs/',
           icon: null,
           component: '',
+        },
+        {
+          name: 'Deactive',
+          type: 'MODAL',
+          link: '',
+          icon: null,
+          component: DeactiveUser,
         },
       ],
     },
