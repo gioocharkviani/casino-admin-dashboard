@@ -3,9 +3,9 @@ import React from 'react';
 import useModalStore from '@/store/useModalStore';
 import { Button, Checkbox, Input } from '@/components/ui';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { boolean } from 'zod';
 import { toast } from 'react-toastify';
 import { deactiveUser } from '@/services';
+import useTableStore from '@/store/useTableStore';
 
 type Inputs = {
   userId: string | number;
@@ -13,14 +13,14 @@ type Inputs = {
   balanceIsChecked: boolean;
 };
 
-const DeactiveUser = ({ id }: any) => {
+const DeactiveUserComp = ({ id }: any) => {
   const { setClose } = useModalStore();
+  const { setRefetch } = useTableStore();
 
   const {
     handleSubmit,
     control,
     reset,
-    setValue,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
@@ -32,15 +32,16 @@ const DeactiveUser = ({ id }: any) => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     toast.promise(
-      (async () => {
-        const response = await deactiveUser({ data });
-        if (response.statusCode === 200 || response.statusCode === 'OK') {
+      deactiveUser({ data }).then(async (response) => {
+        if (response.ok) {
           setClose();
+          setRefetch();
           reset();
         } else {
-          throw new Error(response.message);
+          const resJson = await response.json();
+          throw new Error(resJson);
         }
-      })(),
+      }),
       {
         pending: 'pending Deactivate...',
         success: 'user Deactivate successfully! 👌',
@@ -62,7 +63,7 @@ const DeactiveUser = ({ id }: any) => {
           render={({ field }) => (
             <Input
               error={errors.reason?.message}
-              label="title"
+              label="reasons"
               type="text"
               {...field}
               value={field.value || ''}
@@ -92,4 +93,4 @@ const DeactiveUser = ({ id }: any) => {
   );
 };
 
-export default DeactiveUser;
+export default DeactiveUserComp;

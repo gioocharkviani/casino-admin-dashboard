@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { IoIosSettings, IoMdAdd } from 'react-icons/io';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi';
@@ -10,6 +10,7 @@ import useModalStore from '@/store/useModalStore';
 import { TableOptions } from './tableOptions.types';
 import { Input, Button, Link1, Checkbox, Checkbox1 } from '../ui';
 import { BsThreeDots } from 'react-icons/bs';
+import { object } from 'zod';
 
 interface TableProps {
   options: TableOptions;
@@ -204,10 +205,10 @@ const Tables = ({ options }: TableProps) => {
     router.push(`${link}${id}`);
   };
 
-  const actionBtn = ({ title, Comp, rowId }: any) => {
+  const actionBtn = ({ title, Comp, key }: any) => {
     setOpen();
     setTitle(title);
-    const component = <Comp id={rowId} />;
+    const component = <Comp id={key} />;
     setChildren(component);
   };
 
@@ -274,6 +275,10 @@ const Tables = ({ options }: TableProps) => {
       setAllSelected(false);
     }
   }, [selectedRows, rowsData]);
+
+  //PAGINATION SORT FILTER SELECT QUERY ALL PARAMSw
+
+  //PAGINATION SORT FILTER SELECT QUERY ALL PARAMS
 
   return (
     <div>
@@ -453,7 +458,7 @@ const Tables = ({ options }: TableProps) => {
                                             actionBtn({
                                               title: i.name,
                                               Comp: i.component,
-                                              rowId: row.id,
+                                              key: row[i.key],
                                             })
                                           }
                                           className="capitalize flex items-center gap-2"
@@ -466,7 +471,10 @@ const Tables = ({ options }: TableProps) => {
                                         <button
                                           className="capitalize flex items-center gap-2"
                                           onClick={() =>
-                                            actionLinkHendler(i.link, row.id)
+                                            actionLinkHendler(
+                                              i.link,
+                                              row[i.key]
+                                            )
                                           }
                                         >
                                           {i?.icon}
@@ -496,7 +504,9 @@ const Tables = ({ options }: TableProps) => {
             <div className="flex w-max gap-3 items-center">
               <button
                 disabled={page === 1}
-                onClick={() => setPage(page - 1)}
+                onClick={() => {
+                  setPage(page - 1);
+                }}
                 className="font-bold text-lg p-1"
               >
                 <MdKeyboardArrowLeft />

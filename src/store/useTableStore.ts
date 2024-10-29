@@ -11,7 +11,9 @@ interface TableState {
   totalItems: string; // Total items count
   visibleColumns: any[]; // Array of visible column names
   selectedRows: any[]; // Array of selected row IDs
+  reFetch: boolean;
   setSelectedRows: (ids: any[]) => void; // Function to update selected rows
+  setRefetch: () => void;
   setVisibleColumns: (column: any[]) => void; // Function to update visibleColumns
   setData: (data: any[]) => void; // Function to set table data
   setPage: (page: number) => void; // Function to update the page
@@ -25,6 +27,7 @@ interface TableState {
 const useTableStore = create<TableState>((set) => ({
   data: [],
   visibleColumns: [],
+  reFetch: false,
   page: 1,
   perPage: 10,
   maxPage: 1,
@@ -35,6 +38,7 @@ const useTableStore = create<TableState>((set) => ({
   selectedRows: [],
 
   // Function implementations
+  setRefetch: () => set((state) => ({ reFetch: !state.reFetch })),
   setData: (data) => set({ data }),
   setPage: (page) => set({ page }),
   setPerPage: (perPage) => set({ perPage }),

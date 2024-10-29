@@ -5,7 +5,11 @@ import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
-import DeactiveUser from './DeactiveUser';
+import DeactiveUserComp from './DeactiveUserComp';
+import { LuUserCircle } from 'react-icons/lu';
+import { MdLockOutline } from 'react-icons/md';
+import BlackListAddComp from './BlackListAddComp';
+import { FaUserLock } from 'react-icons/fa';
 
 const UserList = () => {
   const {
@@ -16,6 +20,7 @@ const UserList = () => {
     setData,
     search,
     setMaxPage,
+    reFetch,
     setTotalItems,
   } = useTableStore();
 
@@ -35,7 +40,7 @@ const UserList = () => {
     };
 
     fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search]);
+  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
 
   const tableOptions: TableOptions = {
     uniqueKey: 'id',
@@ -63,15 +68,24 @@ const UserList = () => {
           name: 'user logs',
           type: 'LINK',
           link: '/user/logs/',
-          icon: null,
-          component: '',
+          icon: <LuUserCircle />,
+          key: 'id',
         },
         {
           name: 'Deactive',
           type: 'MODAL',
           link: '',
-          icon: null,
-          component: DeactiveUser,
+          key: 'id',
+          icon: <MdLockOutline />,
+          component: DeactiveUserComp,
+        },
+        {
+          name: 'add to blacklist',
+          type: 'MODAL',
+          link: '',
+          key: 'id',
+          icon: <FaUserLock />,
+          component: BlackListAddComp,
         },
       ],
     },

@@ -5,6 +5,8 @@ import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
+import { MdLockOpen } from 'react-icons/md';
+import ActiveUserComp from './ActiveUserComp';
 
 const DeactivatedUserList = () => {
   const {
@@ -14,6 +16,7 @@ const DeactivatedUserList = () => {
     sortDirection,
     setData,
     search,
+    reFetch,
     setMaxPage,
     setTotalItems,
   } = useTableStore();
@@ -23,18 +26,16 @@ const DeactivatedUserList = () => {
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/deactivated-users?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
+        const apiUrl = `${backendUrl}/admin/deactivated-users`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
-        setMaxPage(Math.ceil(userData?.meta.total / userData?.meta.per_page));
-        setTotalItems(userData?.meta.total);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
     fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search]);
+  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
 
   const tableOptions: TableOptions = {
     uniqueKey: 'id',
@@ -56,14 +57,15 @@ const DeactivatedUserList = () => {
       link: '',
     },
     actions: {
-      active: false,
+      active: true,
       actions: [
         {
-          name: 'remove',
+          name: 'active',
           type: 'MODAL',
-          icon: null,
+          icon: <MdLockOpen />,
+          key: 'user_id',
           link: '',
-          component: '',
+          component: ActiveUserComp,
         },
       ],
     },

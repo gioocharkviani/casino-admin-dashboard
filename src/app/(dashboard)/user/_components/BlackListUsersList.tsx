@@ -5,6 +5,8 @@ import useTableStore from '@/store/useTableStore';
 import { getAllUser } from '@/services';
 import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
+import BlacklistUserRemvoveComp from './BlacklistUserRemvoveComp';
+import { FaUserCheck } from 'react-icons/fa6';
 
 const BlackListUsers = () => {
   const {
@@ -16,6 +18,7 @@ const BlackListUsers = () => {
     search,
     setMaxPage,
     setTotalItems,
+    reFetch,
   } = useTableStore();
 
   useEffect(() => {
@@ -23,7 +26,7 @@ const BlackListUsers = () => {
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/blacklist?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
+        const apiUrl = `${backendUrl}/admin/blacklist`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
         setMaxPage(Math.ceil(userData?.meta.total / userData?.meta.per_page));
@@ -34,7 +37,7 @@ const BlackListUsers = () => {
     };
 
     fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search]);
+  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
 
   const tableOptions: TableOptions = {
     uniqueKey: 'id',
@@ -56,14 +59,15 @@ const BlackListUsers = () => {
       link: '',
     },
     actions: {
-      active: false,
+      active: true,
       actions: [
         {
           name: 'remove',
           type: 'MODAL',
-          icon: null,
+          icon: <FaUserCheck />,
+          key: 'user_id',
           link: '',
-          component: '',
+          component: BlacklistUserRemvoveComp,
         },
       ],
     },

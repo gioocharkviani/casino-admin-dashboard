@@ -101,7 +101,6 @@ export const currentUser = async (token: string) => {
 
 // DEACTIVE USER Service
 export const deactiveUser = async ({ data }: any) => {
-  console.log(data);
   try {
     const token = await handleGetAuthCookie();
     const response = await fetch(`${backendUrl}/admin/deactivated-users`, {
@@ -113,11 +112,90 @@ export const deactiveUser = async ({ data }: any) => {
       },
     });
 
-    const result = await response.json();
-    return result;
+    return response;
   } catch (error: any) {
     // Handle error and display appropriate feedback
     console.error('Error deactivating user:', error.message);
+    throw new Error(error.message || 'An unexpected error occurred');
+  }
+};
+
+//ACTIVE DEACTIVATED USER
+export const avtiveUser = async (id: number) => {
+  const token = await handleGetAuthCookie();
+  try {
+    if (!token) {
+      throw new Error('Authentication token not found');
+    }
+
+    const response = await fetch(
+      `${backendUrl}/admin/deactivated-users/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const resJson = await response.json();
+      throw new Error(resJson.message || 'Error in activating user');
+    }
+
+    return response;
+  } catch (error: any) {
+    console.error('Error activating user:', error.message);
+    throw new Error(error.message || 'An unexpected error occurred');
+  }
+};
+
+// ADD USER TO BLACKLIST
+export const userToBlacklist = async ({ data }: any) => {
+  try {
+    const token = await handleGetAuthCookie();
+    const response = await fetch(`${backendUrl}/admin/blacklist`, {
+      body: JSON.stringify(data),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response;
+  } catch (error: any) {
+    // Handle error and display appropriate feedback
+    console.error('Failed to add user to blacklist:', error.message);
+    throw new Error(error.message || 'An unexpected error occurred');
+  }
+};
+
+//REMOVE USER FROM BLACKLIST
+export const removeUserBlacklist = async (id: number) => {
+  const token = await handleGetAuthCookie();
+  try {
+    if (!token) {
+      throw new Error('Authentication token not found');
+    }
+
+    const response = await fetch(`${backendUrl}/admin/blacklist/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const resJson = await response.json();
+      throw new Error(resJson.message || 'Error in activating user');
+    }
+
+    return response;
+  } catch (error: any) {
+    console.error('Error activating user:', error.message);
     throw new Error(error.message || 'An unexpected error occurred');
   }
 };

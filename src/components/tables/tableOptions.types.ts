@@ -21,6 +21,7 @@ export interface ActionsTypes {
   icon?: any | null;
   link?: any;
   component?: any;
+  key: string;
 }
 
 export interface Actions {

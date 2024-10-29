@@ -30,7 +30,6 @@ export default function AdminLogin() {
         router.refresh();
       } else if (res.statusCode === 403) {
         setError('Invalid Credentials');
-        router.push('https://www.youtube.com/watch?v=oJtHVUgoHNM');
       } else {
         setError('Invalid Credentials');
       }
@@ -60,7 +59,7 @@ export default function AdminLogin() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email address
+                UserName or Email address
               </label>
               <input
                 id="email"
