@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { currentUser } from '@/services/';
 
-import { accessRoutesForAdmin, accessRoutesForSupport } from './guards';
+import { protectRoutesForAdmin, protectRoutesForSupport } from './guards';
 
 export async function middleware(request: NextRequest) {
   const token: any = request.cookies.get('auth')?.value;
@@ -27,7 +27,9 @@ export async function middleware(request: NextRequest) {
       const user = await currentUser(token);
       if (user.statusCode !== 200) {
         const response = NextResponse.redirect(new URL('/signin', request.url));
-        response.cookies.delete('auth');
+        response.cookies
+          .getAll()
+          .forEach((i) => response.cookies.delete(`${i.name}`));
         return response;
       }
 
@@ -36,6 +38,7 @@ export async function middleware(request: NextRequest) {
       const isSuperAdmin = userRoles.includes('SUPER_ADMIN');
       const isAdmin = userRoles.includes('ADMIN');
       const isSupport = userRoles.includes('SUPPORT');
+
       //ROLLED ACCESS ROUTES
 
       // SUPER_ADMIN has access to all routes
@@ -46,13 +49,21 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
 
+      //GUEST USER PROTECT
+      if (!isSuperAdmin || !isAdmin || !isSupport) {
+        const response = NextResponse.redirect(new URL('/signin', request.url));
+        response.cookies.delete('auth');
+        return response;
+      }
+      //GUEST USER PROTECT
+
       // If the user is ADMIN, check for restricted routes
-      if (isAdmin && accessRoutesForAdmin.includes(pathname)) {
+      if (isAdmin && protectRoutesForAdmin.includes(pathname)) {
         return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
       }
 
       // If the user is SUPPORT, check for restricted routes
-      if (isSupport && accessRoutesForSupport.includes(pathname)) {
+      if (isSupport && protectRoutesForAdmin.includes(pathname)) {
         return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
       }
 
@@ -65,9 +76,7 @@ export async function middleware(request: NextRequest) {
     } catch (error) {
       console.log(error);
       const response = NextResponse.redirect(new URL('/signin', request.url));
-      response.cookies
-        .getAll()
-        .map((i, index) => response.cookies.delete(`${i.name}`));
+      response.cookies.delete('auth');
       return response;
     }
   }

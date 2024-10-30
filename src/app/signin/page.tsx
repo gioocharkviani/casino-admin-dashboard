@@ -27,7 +27,7 @@ export default function AdminLogin() {
         handleSetAuthCookie(res.data.data.access_token);
         const user = await currentUser(res.data.data.access_token);
         setUser(user.data.data);
-        router.refresh();
+        router.push('/');
       } else if (res.statusCode === 403) {
         setError('Invalid Credentials');
       } else {

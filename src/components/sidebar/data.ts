@@ -27,6 +27,10 @@ export const data = [
         text: 'blackList',
         link: '/user/blacklist',
       },
+      {
+        text: 'user levels',
+        link: '/user/levels',
+      },
     ],
   },
   {

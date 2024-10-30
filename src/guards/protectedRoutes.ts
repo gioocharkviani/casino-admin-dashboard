@@ -1,3 +1,5 @@
-export const accessRoutesForAdmin = ['/'];
+export const protectRoutesForAdmin = ['/'];
 
-export const accessRoutesForSupport = ['/'];
+export const protectRoutesForSupport = ['/'];
+
+export const accessRoutesSuperAdmin = ['/user'];
