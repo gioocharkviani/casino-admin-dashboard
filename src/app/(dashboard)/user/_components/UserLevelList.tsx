@@ -8,25 +8,16 @@ import { TableOptions } from '@/components/tables/tableOptions.types';
 import { MdLockOpen } from 'react-icons/md';
 import ActiveUserComp from './ActiveUserComp';
 
-const DeactivatedUserList = () => {
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    reFetch,
-    setMaxPage,
-    setTotalItems,
-  } = useTableStore();
+const UserLevelList = () => {
+  const { page, perPage, sortBy, sortDirection, setData, search, reFetch } =
+    useTableStore();
 
   useEffect(() => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
     const fetchData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/deactivated-users`;
+        const apiUrl = `${backendUrl}/admin/levels`;
         const userData = await getAllUser({ apiUrl, token });
         setData(userData?.data);
       } catch (error) {
@@ -49,7 +40,7 @@ const DeactivatedUserList = () => {
     pagination: false,
     sort: true,
     settings: {
-      title: 'deactiveUsersTable',
+      title: 'UserLevels',
       active: true,
     },
     create: {
@@ -57,7 +48,7 @@ const DeactivatedUserList = () => {
       link: '',
     },
     actions: {
-      active: true,
+      active: false,
       actions: [
         {
           name: 'active',
@@ -78,4 +69,4 @@ const DeactivatedUserList = () => {
   );
 };
 
-export default DeactivatedUserList;
+export default UserLevelList;

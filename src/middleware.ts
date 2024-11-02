@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
       const user = await currentUser(token);
       if (user.statusCode !== 200) {
         const response = NextResponse.redirect(new URL('/signin', request.url));
+        console.log('1');
         response.cookies
           .getAll()
           .forEach((i) => response.cookies.delete(`${i.name}`));
@@ -49,6 +50,27 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
       }
 
+      // If the user is ADMIN, check for restricted routes
+      if (isAdmin) {
+        if (protectRoutesForAdmin.includes(pathname)) {
+          return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
+        }
+        return NextResponse.next();
+      }
+
+      // If the user is SUPPORT, check for restricted routes
+      if (isSupport) {
+        if (protectRoutesForSupport.includes(pathname)) {
+          return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
+        }
+        return NextResponse.next();
+      }
+
+      // Redirect signed-in users from /signin to the homepage
+      if (pathname === '/signin') {
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+
       //GUEST USER PROTECT
       if (!isSuperAdmin || !isAdmin || !isSupport) {
         const response = NextResponse.redirect(new URL('/signin', request.url));
@@ -57,26 +79,12 @@ export async function middleware(request: NextRequest) {
       }
       //GUEST USER PROTECT
 
-      // If the user is ADMIN, check for restricted routes
-      if (isAdmin && protectRoutesForAdmin.includes(pathname)) {
-        return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
-      }
-
-      // If the user is SUPPORT, check for restricted routes
-      if (isSupport && protectRoutesForAdmin.includes(pathname)) {
-        return NextResponse.redirect(new URL('/403', request.url)); // Access Denied
-      }
-
-      // Redirect signed-in users from /signin to the homepage
-      if (pathname === '/signin') {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-
       return NextResponse.next(); // Allow all other routes for ADMIN and SUPPORT
     } catch (error) {
       console.log(error);
       const response = NextResponse.redirect(new URL('/signin', request.url));
       response.cookies.delete('auth');
+      console.log('3');
       return response;
     }
   }

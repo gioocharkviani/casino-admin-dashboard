@@ -48,7 +48,7 @@ const BlackListUsers = () => {
       filterBy: [],
     },
     saveData: true,
-    pagination: true,
+    pagination: false,
     sort: true,
     settings: {
       title: 'blackListUsers',

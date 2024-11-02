@@ -7,9 +7,10 @@ import { handleGetAuthCookie } from '@/utils/cookies';
 import { TableOptions } from '@/components/tables/tableOptions.types';
 import DeactiveUserComp from './DeactiveUserComp';
 import { LuUserCircle } from 'react-icons/lu';
-import { MdLockOutline } from 'react-icons/md';
+import { MdLockOutline, MdOutlineAdminPanelSettings } from 'react-icons/md';
 import BlackListAddComp from './BlackListAddComp';
 import { FaUserLock } from 'react-icons/fa';
+import { IoSettingsOutline } from 'react-icons/io5';
 
 const UserList = () => {
   const {
@@ -85,6 +86,14 @@ const UserList = () => {
           link: '',
           key: 'id',
           icon: <FaUserLock />,
+          component: BlackListAddComp,
+        },
+        {
+          name: 'General',
+          type: 'MODAL',
+          link: '',
+          key: 'id',
+          icon: <IoSettingsOutline />,
           component: BlackListAddComp,
         },
       ],

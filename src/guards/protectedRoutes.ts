@@ -1,5 +1,13 @@
-export const protectRoutesForAdmin = ['/'];
+export const protectRoutesForAdmin = [
+  '/user/blacklist',
+  '/user/deactivated',
+  '/user/levels',
+  '/user',
+];
 
-export const protectRoutesForSupport = ['/'];
-
-export const accessRoutesSuperAdmin = ['/user'];
+export const protectRoutesForSupport = [
+  '/user/blacklist',
+  '/user/deactivated',
+  '/user/levels',
+  '/user',
+];

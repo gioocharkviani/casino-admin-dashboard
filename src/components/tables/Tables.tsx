@@ -163,7 +163,7 @@ const Tables = ({ options }: TableProps) => {
   const saveAs = () => {
     // Filter only selected rows
     const selectedRowsData = rowsData.filter((row: any) =>
-      selectedRows.includes(row.options.UniqueKey)
+      selectedRows.includes(row.id)
     );
     const exportData = selectedRowsData.map((row: any) => {
       const rowData: any = {};
