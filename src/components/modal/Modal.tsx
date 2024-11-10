@@ -41,7 +41,7 @@ const Modal = () => {
     <div className="fixed inset-0 px-4 flex items-center justify-center bg-black bg-opacity-50 z-[999999]">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-darkBlue max-h-[100vh] rounded-lg shadow-lg w-full max-w-lg p-4 relative"
+        className="bg-white dark:bg-darkBlue max-h-[100vh] rounded-lg shadow-lg min-w-[40%] max-w-[90vw] p-4 relative"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{title}</h2>

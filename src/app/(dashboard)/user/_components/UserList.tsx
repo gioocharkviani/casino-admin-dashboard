@@ -11,6 +11,7 @@ import { MdLockOutline, MdOutlineAdminPanelSettings } from 'react-icons/md';
 import BlackListAddComp from './BlackListAddComp';
 import { FaUserLock } from 'react-icons/fa';
 import { IoSettingsOutline } from 'react-icons/io5';
+import GeneralSettings from './GeneralSettings';
 
 const UserList = () => {
   const {
@@ -94,7 +95,7 @@ const UserList = () => {
           link: '',
           key: 'id',
           icon: <IoSettingsOutline />,
-          component: BlackListAddComp,
+          component: GeneralSettings,
         },
       ],
     },
