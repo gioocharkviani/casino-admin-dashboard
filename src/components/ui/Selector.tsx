@@ -89,7 +89,7 @@ const Selector = <T,>({
   //SELECTED ITEM MAP
 
   return (
-    <div className="flex flex-col w-full h-[70vh] gap-4 selector">
+    <div className="flex flex-col w-full max-h-[70vh] min-h-[400px] gap-4 selector">
       {/* Display error message if there is one */}
       {error && <p className="text-red-500">{error}</p>}
 

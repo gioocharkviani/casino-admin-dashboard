@@ -1,12 +1,12 @@
 'use client';
 import Tables from '@/components/tables/Tables';
-import useNotifications from '@/hooks/useNotification';
 import { getAllNotification } from '@/services/notification.service';
 import useTableStore from '@/store/useTableStore';
 import { handleGetAuthCookie } from '@/utils/token';
 import React, { useEffect } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { FaRegEdit } from 'react-icons/fa';
+import DeleteNotifi from './DeleteNotifi';
 
 const NotifiList = () => {
   const {
@@ -18,6 +18,7 @@ const NotifiList = () => {
     search,
     setMaxPage,
     setTotalItems,
+    reFetch,
   } = useTableStore();
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const NotifiList = () => {
     };
 
     fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search]);
+  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
 
   const tableOptions: any = {
     search: true,
@@ -73,12 +74,14 @@ const NotifiList = () => {
           type: 'MODAL',
           icon: <AiOutlineDelete />,
           link: '',
-          component: '',
+          key: 'id',
+          component: DeleteNotifi,
         },
         {
           name: 'edit',
           type: 'LINK',
           icon: <FaRegEdit />,
+          key: 'id',
           link: '/notification/edit?id=',
           component: '',
         },
