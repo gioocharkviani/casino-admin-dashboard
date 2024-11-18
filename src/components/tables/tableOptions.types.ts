@@ -1,8 +1,6 @@
-// tableOptions.types.ts
-
 export interface FilterOptions {
   active: boolean;
-  filterBy: string[]; // Adjust the type if filterBy can be other types
+  filterBy: string[];
 }
 
 export interface Settings {
