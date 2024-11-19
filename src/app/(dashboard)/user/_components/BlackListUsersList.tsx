@@ -1,46 +1,40 @@
-'use client';
-import { useEffect } from 'react';
-import Tables from '@/components/tables/Tables';
-import useTableStore from '@/store/useTableStore';
-import { getAllUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
-import { TableOptions } from '@/components/tables/tableOptions.types';
-import BlacklistUserRemvoveComp from './BlacklistUserRemvoveComp';
-import { FaUserCheck } from 'react-icons/fa6';
+"use client";
+import { useEffect, useState } from "react";
+import Table from "@/components/tables/Table";
+import { getBlockUsers } from "@/services";
+import { TableOptions } from "@/components/tables/tableOptions.types";
+import BlacklistUserRemvoveComp from "./BlacklistUserRemvoveComp";
+import { FaUserCheck } from "react-icons/fa6";
+import { useSearchParams } from "next/navigation";
 
 const BlackListUsers = () => {
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    setMaxPage,
-    setTotalItems,
-    reFetch,
-  } = useTableStore();
+  const searchParams = useSearchParams();
+  const [tableData, setTableData] = useState();
+  const [meta, setMeta] = useState();
+
+  //query params
+  const page = searchParams.get("page") || 1;
+  const search = searchParams.get("search") || "";
+  const perPage = searchParams.get("per_page") || 10;
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
-    const fetchData = async () => {
+    const fetchFunc = async () => {
+      const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/blacklist`;
-        const userData = await getAllUser({ apiUrl, token });
-        setData(userData?.data);
-        setMaxPage(Math.ceil(userData?.meta.total / userData?.meta.per_page));
-        setTotalItems(userData?.meta.total);
+        const res = await getBlockUsers(endpoint);
+        setTableData(res.data);
+        setMeta(res.meta);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
       }
     };
-
-    fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
+    fetchFunc();
+  }, [searchParams]);
 
   const tableOptions: TableOptions = {
-    uniqueKey: 'id',
+    uniqueKey: "id",
     search: true,
     select: true,
     filter: {
@@ -51,22 +45,22 @@ const BlackListUsers = () => {
     pagination: false,
     sort: true,
     settings: {
-      title: 'blackListUsers',
+      title: "blackListUsers",
       active: true,
     },
     create: {
       active: false,
-      link: '',
+      link: "",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: 'remove',
-          type: 'MODAL',
+          name: "remove",
+          type: "MODAL",
           icon: <FaUserCheck />,
-          key: 'user_id',
-          link: '',
+          key: "user_id",
+          link: "",
           component: BlacklistUserRemvoveComp,
         },
       ],
@@ -75,7 +69,7 @@ const BlackListUsers = () => {
 
   return (
     <div>
-      <Tables options={tableOptions} />
+      <Table data={tableData} options={tableOptions} />
     </div>
   );
 };

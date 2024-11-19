@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import Sidebar from '@/components/sidebar/Sidebar';
-import Header from '@/components/header/Header';
-import Modal from '@/components/modal/Modal';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import type { Metadata } from "next";
+import Sidebar from "@/components/sidebar/Sidebar";
+import Header from "@/components/header/Header";
+import Modal from "@/components/modal/Modal";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
-  title: 'CASINO ADMIN',
-  description: 'CASINO ADMIN',
+  title: "CASINO ADMIN",
+  description: "CASINO ADMIN",
 };
 
 export default function RootLayout({

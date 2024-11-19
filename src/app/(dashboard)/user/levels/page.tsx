@@ -1,10 +1,13 @@
-import React from 'react';
-import UserLevelList from '../_components/UserLevelList';
+import React, { Suspense } from "react";
+import UserLevelList from "../_components/UserLevelList";
+import TableLoader from "@/components/loaders/tableLoader";
 
-const pageLevel = () => {
+const pageLevel = async () => {
   return (
     <div className="bg-white dark:bg-darkBlue p-2 rounded-lg shadow-lg">
-      <UserLevelList />
+      <Suspense fallback={<TableLoader />}>
+        <UserLevelList />
+      </Suspense>
     </div>
   );
 };

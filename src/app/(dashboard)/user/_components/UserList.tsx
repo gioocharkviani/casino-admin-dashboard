@@ -1,51 +1,46 @@
-'use client';
-import { useEffect } from 'react';
-import Tables from '@/components/tables/Tables';
-import useTableStore from '@/store/useTableStore';
-import { getAllUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
-import { TableOptions } from '@/components/tables/tableOptions.types';
-import DeactiveUserComp from './DeactiveUserComp';
-import { LuUserCircle } from 'react-icons/lu';
-import { MdLockOutline, MdOutlineAdminPanelSettings } from 'react-icons/md';
-import BlackListAddComp from './BlackListAddComp';
-import { FaUserLock } from 'react-icons/fa';
-import { IoSettingsOutline } from 'react-icons/io5';
-import GeneralSettings from './GeneralSettings';
+"use client";
+import { useEffect, useState } from "react";
+import { getAllUser } from "@/services";
+import DeactiveUserComp from "./DeactiveUserComp";
+import { LuUserCircle } from "react-icons/lu";
+import { MdLockOutline } from "react-icons/md";
+import BlackListAddComp from "./BlackListAddComp";
+import { FaUserLock } from "react-icons/fa";
+import { IoSettingsOutline } from "react-icons/io5";
+import GeneralSettings from "./GeneralSettings";
+import { useSearchParams } from "next/navigation";
+import Table from "@/components/tables/Table";
+import { TableOptions } from "@/components/tables/tableOptions.types";
 
 const UserList = () => {
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    setMaxPage,
-    reFetch,
-    setTotalItems,
-  } = useTableStore();
+  const searchParams = useSearchParams();
+  const [tableData, setTableData] = useState();
+  const [meta, setMeta] = useState();
+
+  //query params
+  const page = searchParams.get("page") || 1;
+  const search = searchParams.get("search") || "";
+  const perPage = searchParams.get("per_page") || 10;
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
-    const fetchData = async () => {
+    const fetchFunc = async () => {
+      const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
-        const userData = await getAllUser({ apiUrl, token });
-        setData(userData?.data);
-        setMaxPage(Math.ceil(userData?.meta.total / userData?.meta.per_page));
-        setTotalItems(userData?.meta.total);
+        const res = await getAllUser(endpoint);
+        setTableData(res.data);
+        console.log(res);
+        setMeta(res.meta);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
       }
     };
-
-    fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
+    fetchFunc();
+  }, [searchParams]);
 
   const tableOptions: TableOptions = {
-    uniqueKey: 'id',
+    uniqueKey: "id",
     search: true,
     select: true,
     filter: {
@@ -56,44 +51,44 @@ const UserList = () => {
     pagination: true,
     sort: true,
     settings: {
-      title: 'usersTable',
+      title: "usersTable",
       active: true,
     },
     create: {
       active: false,
-      link: '',
+      link: "",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: 'user logs',
-          type: 'LINK',
-          link: '/user/logs/',
+          name: "user logs",
+          type: "LINK",
+          link: "/user/logs/",
           icon: <LuUserCircle />,
-          key: 'id',
+          key: "id",
         },
         {
-          name: 'Deactive',
-          type: 'MODAL',
-          link: '',
-          key: 'id',
+          name: "Deactive",
+          type: "MODAL",
+          link: "",
+          key: "id",
           icon: <MdLockOutline />,
           component: DeactiveUserComp,
         },
         {
-          name: 'add to blacklist',
-          type: 'MODAL',
-          link: '',
-          key: 'id',
+          name: "add to blacklist",
+          type: "MODAL",
+          link: "",
+          key: "id",
           icon: <FaUserLock />,
           component: BlackListAddComp,
         },
         {
-          name: 'General',
-          type: 'MODAL',
-          link: '',
-          key: 'id',
+          name: "General",
+          type: "MODAL",
+          link: "",
+          key: "id",
           icon: <IoSettingsOutline />,
           component: GeneralSettings,
         },
@@ -101,11 +96,7 @@ const UserList = () => {
     },
   };
 
-  return (
-    <div>
-      <Tables options={tableOptions} />
-    </div>
-  );
+  return <Table data={tableData} metaData={meta} options={tableOptions} />;
 };
 
 export default UserList;

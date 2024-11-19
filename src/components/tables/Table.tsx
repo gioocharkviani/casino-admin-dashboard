@@ -1,22 +1,23 @@
-'use client';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { IoIosSettings, IoMdAdd } from 'react-icons/io';
-import { HiSortAscending, HiSortDescending } from 'react-icons/hi';
-import { IoFilter, IoSave } from 'react-icons/io5';
-import * as XLSX from 'xlsx';
-import useModalStore from '@/store/useModalStore';
-import { TableOptions } from './tableOptions.types';
-import { Input, Button, Link1, Checkbox, Checkbox1 } from '../ui';
-import { BsThreeDots } from 'react-icons/bs';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { IoIosSettings, IoMdAdd } from "react-icons/io";
+import { HiSortAscending, HiSortDescending } from "react-icons/hi";
+import { IoFilter, IoSave } from "react-icons/io5";
+import * as XLSX from "xlsx";
+import useModalStore from "@/store/useModalStore";
+import { TableOptions } from "./tableOptions.types";
+import { Input, Button, Link1, Checkbox, Checkbox1 } from "../ui";
+import { BsThreeDots } from "react-icons/bs";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 interface TableProps {
   options: TableOptions;
   data: any;
+  metaData?: any;
 }
 
-const NewTable = ({ options, data }: TableProps) => {
+const Table = ({ options, data, metaData }: TableProps) => {
   const { setOpen, setChildren, setTitle, isOpen } = useModalStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -26,27 +27,33 @@ const NewTable = ({ options, data }: TableProps) => {
   const [visibleColumns, setVisibleColumns] = useState([]);
   const [perPage, setPerPage] = useState(10);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [sortBy, setSortBy] = useState<string>('');
-  const [totalItems, setTotalItems] = useState(0);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortBy, setSortBy] = useState<string>("");
 
-  const initialSearch = searchParams.get('search') || '';
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const initialSearch = searchParams.get("search") || "";
+  const initialPage = parseInt(searchParams.get("page") || "1");
   const [search, setSearch] = useState(initialSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(initialPage);
 
   const createQueryString = useCallback(
     (params: { [key: string]: string | number | null }) => {
       const urlParams = new URLSearchParams(searchParams.toString());
-      Object.keys(params).forEach((key) => {
-        if (params[key] === null || params[key] === '') urlParams.delete(key);
+      Object.keys(params).forEach(key => {
+        if (params[key] === null || params[key] === "") urlParams.delete(key);
         else urlParams.set(key, params[key].toString());
       });
       return urlParams.toString();
     },
-    [searchParams]
+    [searchParams],
   );
+
+  const isertPerPageQuery = (_: any) => {
+    const newQueryString = createQueryString({
+      per_page: _,
+    });
+    router.push(`${pathname}?${newQueryString}`);
+  };
 
   // Retrieve settings from localStorage on initial load
   useEffect(() => {
@@ -58,6 +65,9 @@ const NewTable = ({ options, data }: TableProps) => {
       }
       if (parsedSettings.perPage) {
         setPerPage(parsedSettings.perPage);
+        setTimeout(() => {
+          isertPerPageQuery(parsedSettings.perPage);
+        }, 200);
       }
     }
     if (!storedSettings) {
@@ -86,7 +96,7 @@ const NewTable = ({ options, data }: TableProps) => {
       perPage: tempPerPage,
     };
     localStorage.setItem(options.settings.title, JSON.stringify(settingsData));
-
+    isertPerPageQuery(tempPerPage);
     // Update the actual state with the temp values
     setVisibleColumns(tempVisibleColumns);
     setPerPage(tempPerPage);
@@ -96,7 +106,7 @@ const NewTable = ({ options, data }: TableProps) => {
     let updatedVisibleColumns;
     if (e.target.checked) {
       updatedVisibleColumns = [...tempVisibleColumns, col].sort(
-        (a, b) => columns.indexOf(a) - columns.indexOf(b)
+        (a, b) => columns.indexOf(a) - columns.indexOf(b),
       );
     } else {
       updatedVisibleColumns = tempVisibleColumns.filter((c: any) => c !== col);
@@ -115,7 +125,7 @@ const NewTable = ({ options, data }: TableProps) => {
             id={col}
             label={col}
             checked={tempVisibleColumns.includes(col)}
-            onChange={(e) => setTempVisibleCol({ e, col })}
+            onChange={e => setTempVisibleCol({ e, col })}
           />
         ))}
       </form>
@@ -123,7 +133,7 @@ const NewTable = ({ options, data }: TableProps) => {
       <Input
         type="number"
         value={tempPerPage.toString()}
-        onChange={(e) => setTempPerPage(Number(e.target.value))}
+        onChange={e => setTempPerPage(Number(e.target.value))}
         min={1}
       />
       <Button onClick={() => saveSettingsData()}>
@@ -137,7 +147,7 @@ const NewTable = ({ options, data }: TableProps) => {
     setTempVisibleColumns(colMap);
     setTempPerPage(perPage);
     setOpen();
-    setTitle('Table settings');
+    setTitle("Table settings");
     setChildren(childElement);
   };
 
@@ -151,7 +161,7 @@ const NewTable = ({ options, data }: TableProps) => {
   // FILTER
   const filterModal = () => {
     setOpen();
-    setTitle('Filter By');
+    setTitle("Filter By");
     setChildren(<div>filter function</div>);
   };
   // FILTER
@@ -159,22 +169,19 @@ const NewTable = ({ options, data }: TableProps) => {
   // SAVE DATA
   const saveAs = () => {
     // Filter only selected rows
-    const selectedRowsData = rowsData.filter((row: any) =>
-      selectedRows.includes(row.id)
-    );
+    const selectedRowsData = rowsData.filter((row: any) => selectedRows.includes(row.id));
     const exportData = selectedRowsData.map((row: any) => {
       const rowData: any = {};
       colMap.forEach((col: string) => {
-        rowData[col] =
-          row[col] !== null && row[col] !== undefined ? row[col] : '';
+        rowData[col] = row[col] !== null && row[col] !== undefined ? row[col] : "";
       });
       return rowData;
     });
 
     const ws = XLSX.utils.json_to_sheet(exportData, { header: colMap });
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'TablesData');
-    XLSX.writeFile(wb, 'TABLE_DATA.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "TablesData");
+    XLSX.writeFile(wb, "TABLE_DATA.xlsx");
   };
   // SAVE DATA
 
@@ -182,9 +189,9 @@ const NewTable = ({ options, data }: TableProps) => {
   // SORT FUNCTION
   const handleSort = (column: any) => {
     setSortBy(column);
-    let direction: any = sortDirection === 'asc' ? 'desc' : 'asc';
+    let direction: any = sortDirection === "asc" ? "desc" : "asc";
     if (sortBy !== column) {
-      direction = 'asc';
+      direction = "asc";
     }
     setSortDirection(direction);
     const newQueryString = createQueryString({
@@ -196,7 +203,7 @@ const NewTable = ({ options, data }: TableProps) => {
 
   // Render sort icon
   const renderSortIcon = (column: string) => {
-    if (sortDirection === 'asc' && sortBy === column) {
+    if (sortDirection === "asc" && sortBy === column) {
       return <HiSortDescending />;
     } else {
       return <HiSortAscending />;
@@ -218,7 +225,7 @@ const NewTable = ({ options, data }: TableProps) => {
 
   const [actionMenu, setActionMenu] = useState<number | string | null>(null);
   const showAction = (id: number | string) => {
-    setActionMenu((prev) => (prev === id ? null : id));
+    setActionMenu(prev => (prev === id ? null : id));
   };
   //ACTIONS
 
@@ -247,7 +254,7 @@ const NewTable = ({ options, data }: TableProps) => {
   // Highlight search term
   const highlightText = (text: string, searchTerm: string) => {
     if (!searchTerm) return text;
-    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
+    const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === searchTerm.toLowerCase() ? (
         <span key={index} className="text-indigo-500 font-bold">
@@ -255,7 +262,7 @@ const NewTable = ({ options, data }: TableProps) => {
         </span>
       ) : (
         part
-      )
+      ),
     );
   };
   // SEARCH
@@ -275,7 +282,7 @@ const NewTable = ({ options, data }: TableProps) => {
   const handleRowSelect = (id: any) => {
     const isSelected = selectedRows.includes(id);
     if (isSelected) {
-      setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
+      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     } else {
       setSelectedRows([...selectedRows, id]);
     }
@@ -306,12 +313,7 @@ const NewTable = ({ options, data }: TableProps) => {
           {/* SEARCH */}
           <div className="flex w-max gap-2 justify-center items-center">
             {options.search && (
-              <Input
-                type="text"
-                placeholder="search"
-                value={search}
-                onChange={handleSearchChange}
-              />
+              <Input type="text" placeholder="search" value={search} onChange={handleSearchChange} />
             )}
           </div>
           {/* SEARCH */}
@@ -334,10 +336,7 @@ const NewTable = ({ options, data }: TableProps) => {
 
             {/* SAVE BUTTON */}
             {options.saveData && (
-              <Button
-                disable={selectedRows.length > 0}
-                onClick={() => saveAs()}
-              >
+              <Button disable={selectedRows.length > 0} onClick={() => saveAs()}>
                 <IoSave />
               </Button>
             )}
@@ -345,12 +344,7 @@ const NewTable = ({ options, data }: TableProps) => {
 
             {/* CREATE NEW */}
             {options.create.active && (
-              <Link1
-                link={options.create.link}
-                icon={IoMdAdd}
-                style="green"
-                title="CREATE"
-              />
+              <Link1 link={options.create.link} icon={IoMdAdd} style="green" title="CREATE" />
             )}
             {/* CREATE NEW */}
           </div>
@@ -363,33 +357,22 @@ const NewTable = ({ options, data }: TableProps) => {
           </div>
         ) : (
           <div className=" pb-5 mt-5 border rounded-md shadow-lg table-container">
-            <table
-              id="data-table"
-              className="min-w-full w-max text-left  border-collapse"
-            >
+            <table id="data-table" className="min-w-full w-max text-left  border-collapse">
               {/* TABLE HEAD */}
               <thead>
                 <tr className="text-sm font-light">
                   {/* CHECKBOX FOR SELECT ALL */}
                   {options.select && (
                     <th>
-                      <Checkbox
-                        id="all-select-funct"
-                        checked={allSelected}
-                        onChange={handleSelectAll}
-                      />
+                      <Checkbox id="all-select-funct" checked={allSelected} onChange={handleSelectAll} />
                     </th>
                   )}
                   {/* END CHECKBOX FOR SELECT ALL */}
 
                   {/* MAP ALL COLUMNS */}
-                  {colMap.map((i) => (
+                  {colMap.map(i => (
                     <th key={i}>
-                      <button
-                        className="w-full"
-                        disabled={!options.sort}
-                        onClick={() => handleSort(i)}
-                      >
+                      <button className="w-full" disabled={!options.sort} onClick={() => handleSort(i)}>
                         <div className="flex items-center w-full gap-1">
                           {/* Check if this is the currently sorted column */}
                           {options.sort && renderSortIcon(i)}
@@ -415,10 +398,7 @@ const NewTable = ({ options, data }: TableProps) => {
 
               <tbody>
                 {rowsData.map((row: any) => (
-                  <tr
-                    key={row.id}
-                    className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}
-                  >
+                  <tr key={row.id} className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}>
                     {/* CHECKBOX FOR SELECT EACH ROW */}
                     {options.select && (
                       <td>
@@ -434,13 +414,13 @@ const NewTable = ({ options, data }: TableProps) => {
                     {/* MAP ROW DATA */}
                     {colMap.map((col: string) => (
                       <td className="text-sm" key={col}>
-                        {col === 'roles' && row[col] && row[col].length > 0 ? (
+                        {col === "roles" && row[col] && row[col].length > 0 ? (
                           // Check if the column is 'roles' and roles array is not empty
                           <span>{row[col][0]}</span>
                         ) : row[col] === undefined ? (
-                          'undefined'
+                          "undefined"
                         ) : row[col] === null ? (
-                          'null'
+                          "null"
                         ) : (
                           highlightText(row[col].toString(), search)
                         )}
@@ -460,18 +440,16 @@ const NewTable = ({ options, data }: TableProps) => {
                             {actionMenu === row.id && (
                               <div
                                 className={`${
-                                  actionMenu === row.id
-                                    ? 'opacity-1'
-                                    : 'opacity-0'
+                                  actionMenu === row.id ? "opacity-1" : "opacity-0"
                                 } absolute right-0 rounded-md p-1 bg-white shadow-lg min-w-[100px] dark:bg-darkBlue border transition-all dark:border-darkBg top-[100%] z-[99]`}
                               >
                                 <ul className="flex flex-col">
-                                  {options.actions.actions?.map((i) => (
+                                  {options.actions.actions?.map(i => (
                                     <li
                                       key={i.name}
                                       className="px-1 py-1 cursor-pointer text-sm capitalize hover:bg-[#d7d7d7] dark:hover:bg-darkHover rounded-md"
                                     >
-                                      {i.type === 'MODAL' && (
+                                      {i.type === "MODAL" && (
                                         <button
                                           onClick={() =>
                                             actionBtn({
@@ -486,15 +464,10 @@ const NewTable = ({ options, data }: TableProps) => {
                                           {i.name}
                                         </button>
                                       )}
-                                      {i?.type === 'LINK' && (
+                                      {i?.type === "LINK" && (
                                         <button
                                           className="capitalize flex items-center gap-2"
-                                          onClick={() =>
-                                            actionLinkHendler(
-                                              i.link,
-                                              row[i.key]
-                                            )
-                                          }
+                                          onClick={() => actionLinkHendler(i.link, row[i.key])}
                                         >
                                           {i?.icon}
                                           {i.name}
@@ -530,14 +503,13 @@ const NewTable = ({ options, data }: TableProps) => {
               </button>
               <span className="text-sm">{page}</span>
               <button
+                disabled={page === metaData?.last_page}
                 onClick={() => handlePagination(1)}
                 className="font-bold text-lg p-1"
               >
                 <MdKeyboardArrowRight />
               </button>
-              {totalItems && (
-                <span className="text-sm">Total Items: {totalItems} </span>
-              )}
+              {metaData && <span className="text-sm">Total Items: {metaData?.total || 0} </span>}
             </div>
           </div>
         )}
@@ -547,4 +519,4 @@ const NewTable = ({ options, data }: TableProps) => {
   );
 };
 
-export default NewTable;
+export default Table;

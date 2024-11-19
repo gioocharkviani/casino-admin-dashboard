@@ -1,39 +1,36 @@
-'use client';
-import Tables from '@/components/tables/Tables';
-import useTableStore from '@/store/useTableStore';
-import { handleGetAuthCookie } from '@/utils/token';
-import React, { useEffect } from 'react';
-import { getUserLog } from '@/services';
-import { useParams } from 'next/navigation';
+"use client";
+import Table from "@/components/tables/Table";
+import React, { useEffect, useState } from "react";
+import { getUserLog } from "@/services";
+import { useParams, useSearchParams } from "next/navigation";
 
 const UserLogs = () => {
   const params = useParams();
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    setMaxPage,
-    setTotalItems,
-  } = useTableStore();
+  const searchParams = useSearchParams();
+  const [tableData, setTableData] = useState();
+  const [meta, setMeta] = useState();
+
+  //query params
+  const page = searchParams.get("page") || 1;
+  const search = searchParams.get("search") || "";
+  const perPage = searchParams.get("per_page") || 10;
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
-    const fetchData = async () => {
+    const fetchFunc = async () => {
+      const endpoint = `${params.id}/logs`;
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users/${params.id}/logs`;
-        const userLog = await getUserLog({ apiUrl, token });
-        setData(userLog.data);
+        const res = await getUserLog(endpoint);
+        setTableData(res.data);
+        console.log(res);
+        setMeta(res.meta);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
       }
     };
-
-    fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search]);
+    fetchFunc();
+  }, [searchParams]);
 
   const tableOptions = {
     search: true,
@@ -47,27 +44,27 @@ const UserLogs = () => {
     sort: true,
     trclickaction: {
       active: false,
-      link: '',
-      component: '',
+      link: "",
+      component: "",
     },
     settings: {
-      title: 'UserLogTable',
+      title: "UserLogTable",
       active: true,
     },
     create: {
       active: false,
-      link: '',
+      link: "",
     },
     actions: {
       active: false,
-      edit: '',
+      edit: "",
       remove: false,
     },
   };
 
   return (
     <div>
-      <Tables options={tableOptions} />
+      <Table data={tableData} metaData={meta} options={tableOptions} />
     </div>
   );
 };

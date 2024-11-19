@@ -1,47 +1,44 @@
-'use client';
-import Tables from '@/components/tables/Tables';
-import { getAllNotification } from '@/services/notification.service';
-import useTableStore from '@/store/useTableStore';
-import { handleGetAuthCookie } from '@/utils/token';
-import React, { useEffect } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { FaRegEdit } from 'react-icons/fa';
-import DeleteNotifi from './DeleteNotifi';
+"use client";
+import { getAllNotification } from "@/services/notification.service";
+import React, { useEffect, useState } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import { FaRegEdit } from "react-icons/fa";
+import DeleteNotifi from "./DeleteNotifi";
+import Table from "@/components/tables/Table";
+import { useSearchParams } from "next/navigation";
+import { data } from "@/components/sidebar/data";
 
 const NotifiList = () => {
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    setMaxPage,
-    setTotalItems,
-    reFetch,
-  } = useTableStore();
+  const searchParams = useSearchParams();
+  const [tableData, setTableData] = useState();
+  const [meta, setMeta] = useState();
+
+  //query params
+  const page = searchParams.get("page") || 1;
+  const search = searchParams.get("search") || "";
+  const perPage = searchParams.get("per_page") || "";
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
-    const fetchData = async () => {
+    const fetchFunc = async () => {
+      const endpoint = ``;
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/notification/admin?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
-        const notificationData = await getAllNotification({ apiUrl, token });
-        setData(notificationData.data);
-        setMaxPage(
-          Math.ceil(
-            notificationData?.meta.total / notificationData?.meta.per_page
-          )
-        );
-        setTotalItems(notificationData?.meta.total);
+        const res = await getAllNotification(endpoint);
+        const last_page = res.meta.total_pages;
+        const updatedMeta = {
+          ...res.meta,
+          last_page,
+        };
+        console.log(updatedMeta);
+        setTableData(res.data);
+        setMeta(updatedMeta);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
       }
     };
-
-    fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
+    fetchFunc();
+  }, [searchParams]);
 
   const tableOptions: any = {
     search: true,
@@ -55,35 +52,35 @@ const NotifiList = () => {
     sort: true,
     trclickaction: {
       active: false,
-      link: '',
-      component: '',
+      link: "",
+      component: "",
     },
     settings: {
-      title: 'notificationTable',
+      title: "notificationTable",
       active: true,
     },
     create: {
       active: true,
-      link: '/notification/create',
+      link: "/notification/create",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: 'remove',
-          type: 'MODAL',
+          name: "remove",
+          type: "MODAL",
           icon: <AiOutlineDelete />,
-          link: '',
-          key: 'id',
+          link: "",
+          key: "id",
           component: DeleteNotifi,
         },
         {
-          name: 'edit',
-          type: 'LINK',
+          name: "edit",
+          type: "LINK",
           icon: <FaRegEdit />,
-          key: 'id',
-          link: '/notification/edit?id=',
-          component: '',
+          key: "id",
+          link: "/notification/edit?id=",
+          component: "",
         },
       ],
     },
@@ -91,7 +88,7 @@ const NotifiList = () => {
 
   return (
     <div>
-      <Tables options={tableOptions} />
+      <Table data={tableData} metaData={meta} options={tableOptions} />
     </div>
   );
 };

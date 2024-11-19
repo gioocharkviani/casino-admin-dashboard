@@ -1,44 +1,40 @@
-'use client';
-import { useEffect } from 'react';
-import Tables from '@/components/tables/Tables';
-import useTableStore from '@/store/useTableStore';
-import { getAllUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
-import { TableOptions } from '@/components/tables/tableOptions.types';
-import { MdLockOpen } from 'react-icons/md';
-import ActiveUserComp from './ActiveUserComp';
+"use client";
+import { useEffect, useState } from "react";
+import Table from "@/components/tables/Table";
+import { getDeactivatedUser } from "@/services";
+import { TableOptions } from "@/components/tables/tableOptions.types";
+import { MdLockOpen } from "react-icons/md";
+import ActiveUserComp from "./ActiveUserComp";
+import { useSearchParams } from "next/navigation";
 
 const DeactivatedUserList = () => {
-  const {
-    page,
-    perPage,
-    sortBy,
-    sortDirection,
-    setData,
-    search,
-    reFetch,
-    setMaxPage,
-    setTotalItems,
-  } = useTableStore();
+  const searchParams = useSearchParams();
+  const [tableData, setTableData] = useState();
+  const [meta, setMeta] = useState();
+
+  //query params
+  const page = searchParams.get("page") || 1;
+  const search = searchParams.get("search") || "";
+  const perPage = searchParams.get("per_page") || 10;
+  const sortBy = searchParams.get("sort_by") || "";
+  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
-    const fetchData = async () => {
+    const fetchFunc = async () => {
+      const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/deactivated-users`;
-        const userData = await getAllUser({ apiUrl, token });
-        setData(userData?.data);
+        const res = await getDeactivatedUser(endpoint);
+        setTableData(res.data);
+        setMeta(res.meta);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error(error);
       }
     };
-
-    fetchData();
-  }, [page, perPage, sortBy, sortDirection, setData, search, reFetch]);
+    fetchFunc();
+  }, [searchParams]);
 
   const tableOptions: TableOptions = {
-    uniqueKey: 'id',
+    uniqueKey: "id",
     search: true,
     select: true,
     filter: {
@@ -49,22 +45,22 @@ const DeactivatedUserList = () => {
     pagination: false,
     sort: true,
     settings: {
-      title: 'deactiveUsersTable',
+      title: "deactiveUsersTable",
       active: true,
     },
     create: {
       active: false,
-      link: '',
+      link: "",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: 'active',
-          type: 'MODAL',
+          name: "active",
+          type: "MODAL",
           icon: <MdLockOpen />,
-          key: 'user_id',
-          link: '',
+          key: "user_id",
+          link: "",
           component: ActiveUserComp,
         },
       ],
@@ -73,7 +69,7 @@ const DeactivatedUserList = () => {
 
   return (
     <div>
-      <Tables options={tableOptions} />
+      <Table data={tableData} metaData={meta} options={tableOptions} />
     </div>
   );
 };

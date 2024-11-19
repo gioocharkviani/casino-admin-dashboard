@@ -1,19 +1,16 @@
-import { api } from '@/config';
-import { handleGetAuthCookie } from '@/utils/token';
+import { api } from "@/config";
+import { handleGetAuthCookie } from "@/utils/cookies";
+const backendNetsUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
 
 // GET ALL NOTIFICATION
-export const getAllNotification = async ({
-  apiUrl,
-  token,
-}: {
-  apiUrl: string;
-  token?: string;
-}) => {
+export const getAllNotification = async (endpoint: string) => {
+  const token = await handleGetAuthCookie();
+  const apiUrl = `${backendNetsUrl}/notification/admin${endpoint}`;
   try {
     const response = await api({
       url: apiUrl,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -25,23 +22,17 @@ export const getAllNotification = async ({
     return response.data; // Assuming you return data from the API
   } catch (error) {
     console.error(error);
-    return { error: 'Failed to fetch users' };
+    return { error: "Failed to fetch users" };
   }
 };
 
-export const markNotificationAsRead = async ({
-  apiUrl,
-  token,
-}: {
-  apiUrl: string;
-  token?: string;
-}) => {
+export const markNotificationAsRead = async ({ apiUrl, token }: { apiUrl: string; token?: string }) => {
   try {
     const response = await api({
       url: apiUrl,
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -53,7 +44,7 @@ export const markNotificationAsRead = async ({
     return response.data;
   } catch (error) {
     console.error(error);
-    return { error: 'Failed to fetch users' };
+    return { error: "Failed to fetch users" };
   }
 };
 
@@ -63,25 +54,25 @@ export const removeNotificatiopn = async (id: number) => {
   const token = await handleGetAuthCookie();
   try {
     if (!token) {
-      throw new Error('Authentication token not found');
+      throw new Error("Authentication token not found");
     }
 
     const response = await fetch(`${backendUrl}/notification/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (!response.ok) {
       const resJson = await response.json();
-      throw new Error(resJson.message || 'Error duaring remove notification');
+      throw new Error(resJson.message || "Error duaring remove notification");
     }
 
     return response;
   } catch (error: any) {
-    console.error('Error activating user:', error.message);
-    throw new Error(error.message || 'An unexpected error occurred');
+    console.error("Error activating user:", error.message);
+    throw new Error(error.message || "An unexpected error occurred");
   }
 };

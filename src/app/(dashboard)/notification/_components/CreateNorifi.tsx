@@ -1,19 +1,19 @@
-'use client';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-import Textarea from '@/components/ui/Textarea';
-import React, { useEffect, useState } from 'react';
-import { FaEye } from 'react-icons/fa';
-import useModalStore from '@/store/useModalStore';
-import Selector from '@/components/ui/Selector';
-import useSelectorStore from '@/store/useSelectorStore';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { getAllUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
-import { api } from '@/config';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+"use client";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Textarea from "@/components/ui/Textarea";
+import React, { useEffect, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import useModalStore from "@/store/useModalStore";
+import Selector from "@/components/ui/Selector";
+import useSelectorStore from "@/store/useSelectorStore";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { getAllUser } from "@/services";
+import { handleGetAuthCookie } from "@/utils/cookies";
+import { api } from "@/config";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   title: string;
@@ -25,9 +25,7 @@ type Inputs = {
 
 const CreateNotifi = () => {
   const { setOpen, setChildren, setTitle } = useModalStore();
-  const { selectedItem, addSelectedItem, resetSelectedItems } =
-    useSelectorStore();
-  const router = useRouter();
+  const { selectedItem, addSelectedItem, resetSelectedItems } = useSelectorStore();
   const {
     handleSubmit,
     control,
@@ -36,11 +34,11 @@ const CreateNotifi = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      title: '',
+      title: "",
       recipientIds: [],
-      content: '',
+      content: "",
       trigerAt: null,
-      category: '',
+      category: "",
     },
   });
 
@@ -48,11 +46,11 @@ const CreateNotifi = () => {
   const notificationPreview = (data: any) => {
     const htmlContent = data;
     setChildren(<div dangerouslySetInnerHTML={{ __html: htmlContent }} />);
-    setTitle('Notification preview');
+    setTitle("Notification preview");
     setOpen();
   };
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async data => {
     toast.promise(
       (async () => {
         if (!data.trigerAt) {
@@ -63,7 +61,7 @@ const CreateNotifi = () => {
         const token = await handleGetAuthCookie();
         const response = await api({
           url: `${backendUrl}/notification/create`,
-          method: 'POST',
+          method: "POST",
           body: data,
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,22 +72,22 @@ const CreateNotifi = () => {
         if (response.statusCode === 201) {
           resetSelectedItems();
           reset();
-          return 'Notification sent successfully!';
+          return "Notification sent successfully!";
         } else {
           throw new Error(response.message);
         }
       })(),
       {
-        pending: 'Sending notification...',
-        success: 'Notification sent successfully! 👌',
-        error: 'Failed to send notification. 🤯',
-      }
+        pending: "Sending notification...",
+        success: "Notification sent successfully! 👌",
+        error: "Failed to send notification. 🤯",
+      },
     );
   };
 
   useEffect(() => {
-    const modifiedSelectedItem = selectedItem.map((i) => i.id);
-    setValue('recipientIds', modifiedSelectedItem);
+    const modifiedSelectedItem = selectedItem.map(i => i.id);
+    setValue("recipientIds", modifiedSelectedItem);
   }, [selectedItem]);
 
   // Fetch user data
@@ -99,12 +97,11 @@ const CreateNotifi = () => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
     const fetchData = async () => {
       try {
-        const token = await handleGetAuthCookie();
-        const apiUrl = `${backendUrl}/admin/users?per_page=99999999`;
-        const userData = await getAllUser({ apiUrl, token });
+        const endpoint = `?per_page=99999999`;
+        const userData = await getAllUser(endpoint);
         setUserList(userData.data);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     };
 
@@ -113,17 +110,15 @@ const CreateNotifi = () => {
 
   // Function to open modal with selector
   const openUserSelector = () => {
-    setChildren(
-      <Selector data={userList} displayKey="user_name" uniqueKey="id" />
-    );
-    setTitle('Select user');
+    setChildren(<Selector data={userList} displayKey="user_name" uniqueKey="id" />);
+    setTitle("Select user");
     setOpen();
   };
 
   // Dropdown options
   const options = [
-    { value: 'NOTIFI', label: 'Notifi' },
-    { value: 'POPUP', label: 'Popup' },
+    { value: "NOTIFI", label: "Notifi" },
+    { value: "POPUP", label: "Popup" },
   ];
 
   return (
@@ -140,8 +135,8 @@ const CreateNotifi = () => {
                 label="title"
                 type="text"
                 {...field}
-                value={field.value || ''}
-                onChange={(e) => field.onChange(e.target.value || null)}
+                value={field.value || ""}
+                onChange={e => field.onChange(e.target.value || null)}
               />
             )}
           />
@@ -151,7 +146,7 @@ const CreateNotifi = () => {
           <Controller
             name="recipientIds"
             control={control}
-            rules={{ required: 'Users are required' }}
+            rules={{ required: "Users are required" }}
             render={({ field }) => (
               <Button type="button" onClick={openUserSelector}>
                 Select Users
@@ -159,9 +154,7 @@ const CreateNotifi = () => {
             )}
           />
           {errors.recipientIds && (
-            <p className="text-red-500 text-sm my-2">
-              {errors.recipientIds.message}
-            </p>
+            <p className="text-red-500 text-sm my-2">{errors.recipientIds.message}</p>
           )}
         </div>
 
@@ -169,7 +162,7 @@ const CreateNotifi = () => {
           <Controller
             name="category"
             control={control}
-            rules={{ required: 'Category is required' }}
+            rules={{ required: "Category is required" }}
             render={({ field }) => (
               <Select
                 label="Select an Option"
@@ -177,7 +170,7 @@ const CreateNotifi = () => {
                 options={options}
                 placeholder="Select an option"
                 error={errors.category?.message}
-                onChange={(value) => field.onChange(value)}
+                onChange={value => field.onChange(value)}
               />
             )}
           />
@@ -188,13 +181,9 @@ const CreateNotifi = () => {
           <Controller
             name="content"
             control={control}
-            rules={{ required: 'Content is required' }}
+            rules={{ required: "Content is required" }}
             render={({ field }) => (
-              <Textarea
-                error={errors.content?.message}
-                label="Content"
-                {...field}
-              />
+              <Textarea error={errors.content?.message} label="Content" {...field} />
             )}
           />
         </div>
@@ -205,11 +194,7 @@ const CreateNotifi = () => {
             control={control}
             name="content"
             render={({ field }) => (
-              <Button
-                icon={FaEye}
-                type="button"
-                onClick={() => notificationPreview(field.value)}
-              >
+              <Button icon={FaEye} type="button" onClick={() => notificationPreview(field.value)}>
                 Preview
               </Button>
             )}
@@ -227,8 +212,8 @@ const CreateNotifi = () => {
                 label="Trigger Date"
                 type="datetime-local"
                 {...field}
-                value={field.value || ''}
-                onChange={(e) => field.onChange(e.target.value || null)}
+                value={field.value || ""}
+                onChange={e => field.onChange(e.target.value || null)}
               />
             )}
           />
