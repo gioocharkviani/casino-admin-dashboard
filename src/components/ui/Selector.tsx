@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Input from './Input';
-import Checkbox1 from './Checkbox1';
-import Button from './Button';
-import useSelectorStore from '@/store/useSelectorStore';
-import { FaCheck } from 'react-icons/fa';
-import { IoClose } from 'react-icons/io5';
+import React, { useEffect, useState } from "react";
+import Input from "./Input";
+import Checkbox1 from "./Checkbox1";
+import Button from "./Button";
+import useSelectorStore from "@/store/useSelectorStore";
+import { FaCheck } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 
 interface SelectorProps<T> {
   data: T[];
@@ -13,12 +13,7 @@ interface SelectorProps<T> {
   error?: string; // Add error prop
 }
 
-const Selector = <T,>({
-  data,
-  displayKey,
-  uniqueKey,
-  error,
-}: SelectorProps<T>) => {
+const Selector = <T,>({ data, displayKey, uniqueKey, error }: SelectorProps<T>) => {
   const {
     selectorData,
     setSelectorData,
@@ -29,7 +24,7 @@ const Selector = <T,>({
     filteredData,
   } = useSelectorStore();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Update local state when selectedItem changes
   const [mappedData, setMappedData] = useState<T[]>([]);
@@ -49,8 +44,8 @@ const Selector = <T,>({
   const searchItem = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query); // Update the search query
-    const filterItem = selectorData.filter((item) =>
-      String(item[displayKey]).toLowerCase().includes(query)
+    const filterItem = selectorData.filter(item =>
+      String(item[displayKey]).toLowerCase().includes(query),
     );
     setFilteredData(filterItem);
   };
@@ -61,11 +56,11 @@ const Selector = <T,>({
 
   const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      selectorData.forEach((item) => {
+      selectorData.forEach(item => {
         addSelectedItem(item);
       });
     } else {
-      selectedItem.forEach((item) => {
+      selectedItem.forEach(item => {
         removeSelectedItem(item[uniqueKey]);
       });
     }
@@ -89,7 +84,7 @@ const Selector = <T,>({
   //SELECTED ITEM MAP
 
   return (
-    <div className="flex flex-col w-full max-h-[70vh] min-h-[400px] gap-4 selector">
+    <div className="flex flex-col w-full max-h-[70vh] min-h-[400px] min-w-[40vw] gap-4 selector">
       {/* Display error message if there is one */}
       {error && <p className="text-red-500">{error}</p>}
 
@@ -100,11 +95,7 @@ const Selector = <T,>({
           onChange={toggleSelectAll}
           checked={selectedItem.length === selectorData.length}
         />
-        <Input
-          onChange={(e) => searchItem(e)}
-          type="text"
-          placeholder="Find User"
-        />
+        <Input onChange={e => searchItem(e)} type="text" placeholder="Find User" />
       </div>
 
       <div className="flex gap-3 flex-col lg:flex-row w-full h-full pb-4">
@@ -112,9 +103,7 @@ const Selector = <T,>({
         <div className="bg-white dark:bg-darkBg overflow-y-auto max-h-[300px] h-full rounded-md shadow-lg p-2 w-full">
           <ul className="flex flex-col gap-2">
             {searchQuery && filteredData.length === 0 ? (
-              <li className="text-center text-gray-500">
-                No results found for "{searchQuery}".
-              </li>
+              <li className="text-center text-gray-500">No results found for "{searchQuery}".</li>
             ) : mappedData.length > 0 ? (
               mappedData.map((i: any) => (
                 <li
@@ -123,9 +112,9 @@ const Selector = <T,>({
                   className={`bg-white flex dark:hover:bg-bs-dark justify-between items-center dark:bg-darkBlue py-2 px-3 hover:bg-slate-100 text-sm rounded-md shadow-lg cursor-pointer`}
                 >
                   {i[displayKey]}
-                  {selectedItem.some(
-                    (item) => item[uniqueKey] === i[uniqueKey]
-                  ) && <FaCheck className="text-bs-success" />}
+                  {selectedItem.some(item => item[uniqueKey] === i[uniqueKey]) && (
+                    <FaCheck className="text-bs-success" />
+                  )}
                 </li>
               ))
             ) : (

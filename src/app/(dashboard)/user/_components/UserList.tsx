@@ -30,7 +30,6 @@ const UserList = () => {
       try {
         const res = await getAllUser(endpoint);
         setTableData(res.data);
-        console.log(res);
         setMeta(res.meta);
       } catch (error) {
         console.error(error);

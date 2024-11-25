@@ -1,23 +1,20 @@
-'use client';
-import { Button } from '@/components/ui';
-import React from 'react';
-import useModalStore from '@/store/useModalStore';
-import { toast } from 'react-toastify';
-import { removeNotificatiopn } from '@/services';
-import useTableStore from '@/store/useTableStore';
+"use client";
+import { Button } from "@/components/ui";
+import React from "react";
+import useModalStore from "@/store/useModalStore";
+import { toast } from "react-toastify";
+import { removeNotificatiopn } from "@/services";
 
 const DeleteNotifi = ({ id }: any) => {
   const { setClose } = useModalStore();
-  const { setRefetch } = useTableStore();
 
   const onSubmit = async () => {
     toast.promise(
       (async () => {
-        removeNotificatiopn(id).then(async (res) => {
+        removeNotificatiopn(id).then(async res => {
           console.log(res);
-          if (res.statusText === 'OK') {
+          if (res.statusText === "OK") {
             setClose();
-            setRefetch;
           } else {
             const resJson = await res.json();
             throw new Error(resJson);
@@ -25,10 +22,10 @@ const DeleteNotifi = ({ id }: any) => {
         });
       })(),
       {
-        pending: 'remove notification...',
-        success: 'Notification remove successfully! 👌',
-        error: 'Failed to remove notification. 🤯',
-      }
+        pending: "remove notification...",
+        success: "Notification remove successfully! 👌",
+        error: "Failed to remove notification. 🤯",
+      },
     );
   };
 

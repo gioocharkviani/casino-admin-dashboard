@@ -6,11 +6,13 @@ import { TableOptions } from "@/components/tables/tableOptions.types";
 import { MdLockOpen } from "react-icons/md";
 import ActiveUserComp from "./ActiveUserComp";
 import { useSearchParams } from "next/navigation";
+import useRefetchStore from "@/store/useRefetchStore";
 
 const DeactivatedUserList = () => {
   const searchParams = useSearchParams();
   const [tableData, setTableData] = useState();
   const [meta, setMeta] = useState();
+  const { refetch } = useRefetchStore();
 
   //query params
   const page = searchParams.get("page") || 1;
@@ -31,7 +33,7 @@ const DeactivatedUserList = () => {
       }
     };
     fetchFunc();
-  }, [searchParams]);
+  }, [searchParams, refetch]);
 
   const tableOptions: TableOptions = {
     uniqueKey: "id",

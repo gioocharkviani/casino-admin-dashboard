@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 body {
-  background: theme('colors.lightBg');
+  background: theme("colors.lightBg");
   overflow-x: hidden;
 }
 .dark body {
-  background: theme('colors.darkBg');
+  background: theme("colors.darkBg");
 }
 
-input[type='checkbox'] {
+input[type="checkbox"] {
   background-color: transparent;
 }
 
@@ -24,7 +24,7 @@ input[type='checkbox'] {
   background: #f1f1f1;
 }
 .dark ::-webkit-scrollbar-track {
-  background: theme('colors.darkBg');
+  background: theme("colors.darkBg");
 }
 
 /* Handle */
@@ -69,7 +69,7 @@ input[type='checkbox'] {
   display: block;
   position: absolute;
   margin: 2px;
-  content: '';
+  content: "";
   background-color: white;
   width: 18px;
   height: 18px;
@@ -145,15 +145,15 @@ input[type='checkbox'] {
 }
 
 .dark table tbody tr {
-  border-color: theme('colors.darkBg');
+  border-color: theme("colors.darkBg");
 }
 
 .dark table thead tr {
-  border-color: theme('colors.darkBg');
+  border-color: theme("colors.darkBg");
 }
 
 .dark .table-container {
-  border-color: theme('colors.darkBg');
+  border-color: theme("colors.darkBg");
 }
 /*=========DATA TABLES ==========*/
 
@@ -197,30 +197,30 @@ input[type='checkbox'] {
 .cusUnCheckIcon {
   transition: all 0.2s ease-in-out;
   margin-top: 100px;
-  color: theme('colors.indigo500');
+  color: theme("colors.indigo500");
 }
 .cusCheckIcon {
-  color: theme('colors.indigo500');
+  color: theme("colors.indigo500");
   transition: all 0.2s ease-in-out;
   margin-top: 0px;
 }
 
 .checkedCustom1 label {
-  border: 2px solid theme('colors.indigo500');
+  border: 2px solid theme("colors.indigo500");
 }
 .dark .cusUnCheckIcon {
   transition: all 0.2s ease-in-out;
   margin-top: 100px;
-  color: theme('colors.bs-success');
+  color: theme("colors.bs-success");
 }
 .dark .cusCheckIcon {
-  color: theme('colors.bs-success');
+  color: theme("colors.bs-success");
   transition: all 0.2s ease-in-out;
   margin-top: 0px;
 }
 
 .dark .checkedCustom1 label {
-  border: 2px solid theme('colors.bs-success');
+  border: 2px solid theme("colors.bs-success");
 }
 /*=========CcustomCheckbox1 ==========*/
 
