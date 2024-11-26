@@ -1,13 +1,30 @@
-export const protectRoutesForAdmin = [
-  '/user/blacklist',
-  '/user/deactivated',
-  '/user/levels',
-  '/user',
-];
-
-export const protectRoutesForSupport = [
-  '/user/blacklist',
-  '/user/deactivated',
-  '/user/levels',
-  '/user',
+export const routes = [
+  {
+    route: "/",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/user",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/user/deactivated",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/user/blacklist",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/user/levels",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/notification",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/games",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
 ];
