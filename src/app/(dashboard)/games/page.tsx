@@ -1,10 +1,10 @@
-import React from 'react';
-import NewTableTest from './NewTableTest';
+import React from "react";
+import GameList from "./components/GameList";
 
-const page =async () => {
+const page = async () => {
   return (
     <div className="bg-white dark:bg-darkBlue p-2 rounded-lg shadow-lg">
-      <NewTableTest />
+      <GameList />
     </div>
   );
 };

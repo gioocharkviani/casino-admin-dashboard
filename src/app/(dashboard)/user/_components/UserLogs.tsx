@@ -35,6 +35,10 @@ const UserLogs = () => {
   const tableOptions = {
     search: true,
     select: true,
+    image: {
+      active: false,
+      imageDataKey: "img",
+    },
     filter: {
       active: false,
       filterBy: [],

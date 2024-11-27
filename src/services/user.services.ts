@@ -20,10 +20,10 @@ export const getAllUser = async (endpoint: String) => {
     });
 
     if (response.statusCode !== 200) {
-      return { error: response.errorText }; // Handle error case
+      return { error: response.errorText };
     }
 
-    return response.data; // Assuming you return data from the API
+    return response.data;
   } catch (error) {
     console.error(error);
     return { error: "Failed to fetch users" };

@@ -37,6 +37,10 @@ const BlackListUsers = () => {
     uniqueKey: "id",
     search: true,
     select: true,
+    image: {
+      active: false,
+      imageDataKey: "img",
+    },
     filter: {
       active: false,
       filterBy: [],

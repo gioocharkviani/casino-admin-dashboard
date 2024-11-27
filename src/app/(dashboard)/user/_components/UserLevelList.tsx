@@ -1,9 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Table from "@/components/tables/Table";
-import useTableStore from "@/store/useTableStore";
-import { getAllUser, getUserLevel } from "@/services";
-import { handleGetAuthCookie } from "@/utils/cookies";
+import { getUserLevel } from "@/services";
 import { TableOptions } from "@/components/tables/tableOptions.types";
 import { MdLockOpen } from "react-icons/md";
 import ActiveUserComp from "./ActiveUserComp";
@@ -39,6 +37,10 @@ const UserLevelList = () => {
     uniqueKey: "id",
     search: true,
     select: true,
+    image: {
+      active: false,
+      imageDataKey: "img",
+    },
     filter: {
       active: false,
       filterBy: [],

@@ -15,7 +15,7 @@ export interface CreateAction {
 
 export interface ActionsTypes {
   name?: string;
-  type?: 'LINK' | 'MODAL';
+  type?: "LINK" | "MODAL";
   icon?: any | null;
   link?: any;
   component?: any;
@@ -29,7 +29,13 @@ export interface Actions {
   remove?: boolean;
 }
 
+export interface Image {
+  active: boolean;
+  imageDataKey: string;
+}
+
 export interface TableOptions {
+  image?: Image;
   search: boolean;
   select: boolean;
   filter: FilterOptions;

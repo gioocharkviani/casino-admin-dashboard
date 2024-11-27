@@ -131,8 +131,14 @@ input[type="checkbox"] {
   min-width: max-content;
   max-width: 300px;
   white-space: nowrap;
-  font-weight: 400;
+  position: relative;
+}
+
+.table-container table tbody tr td .divHighliteText {
+  max-width: 300px;
+  overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 400;
 }
 
 .table-container table {

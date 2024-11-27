@@ -10,6 +10,7 @@ import { TableOptions } from "./tableOptions.types";
 import { Input, Button, Link1, Checkbox, Checkbox1 } from "../ui";
 import { BsThreeDots } from "react-icons/bs";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import Image from "next/image";
 
 interface TableProps {
   options: TableOptions;
@@ -253,7 +254,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
 
   // Highlight search term
   const highlightText = (text: string, searchTerm: string) => {
-    if (!searchTerm) return text;
+    if (!searchTerm) return <div className="divHighliteText">{text}</div>;
     const parts = text.split(new RegExp(`(${searchTerm})`, "gi"));
     return parts.map((part, index) =>
       part.toLowerCase() === searchTerm.toLowerCase() ? (
@@ -369,6 +370,16 @@ const Table = ({ options, data, metaData }: TableProps) => {
                   )}
                   {/* END CHECKBOX FOR SELECT ALL */}
 
+                  {/* TABLE HEAD IMAGE */}
+                  {options.image?.active && (
+                    <th>
+                      <div className="w-full flex justify-start items-center h-full">
+                        <span>image</span>
+                      </div>
+                    </th>
+                  )}
+                  {/* TABLE HEAD IMAGE */}
+
                   {/* MAP ALL COLUMNS */}
                   {colMap.map(i => (
                     <th key={i}>
@@ -411,16 +422,29 @@ const Table = ({ options, data, metaData }: TableProps) => {
                     )}
                     {/* END CHECKBOX FOR SELECT EACH ROW */}
 
+                    {/*RENDER IMAGE*/}
+                    {options.image?.active && (
+                      <td>
+                        <Image
+                          src={`${row.img}`}
+                          width={100}
+                          height={50}
+                          alt="123"
+                          className="w-24 h-10 bg-gray-300 rounded-md overflow-hidden"
+                        />
+                      </td>
+                    )}
+                    {/*RENDER IMAGE*/}
+
                     {/* MAP ROW DATA */}
                     {colMap.map((col: string) => (
                       <td className="text-sm" key={col}>
-                        {col === "roles" && row[col] && row[col].length > 0 ? (
-                          // Check if the column is 'roles' and roles array is not empty
-                          <span>{row[col][0]}</span>
-                        ) : row[col] === undefined ? (
+                        {row[col] === undefined ? (
                           "undefined"
                         ) : row[col] === null ? (
                           "null"
+                        ) : typeof row[col] === "object" ? (
+                          <div>test</div>
                         ) : (
                           highlightText(row[col].toString(), search)
                         )}
