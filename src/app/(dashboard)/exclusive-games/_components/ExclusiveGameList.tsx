@@ -1,15 +1,13 @@
 "use client";
 import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
-import { getAllGames } from "@/services";
+import { getExclusiveGames } from "@/services";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { MdLockOutline } from "react-icons/md";
-import AddToFav from "./AddToFav";
-import { useSearchParams } from "next/navigation";
 
-const GameList = () => {
+const ExclusiveGameList = () => {
   const [data, setData] = useState([]);
-  const [meta, setMeta] = useState();
   const searchParams = useSearchParams();
   //query params
   const page = searchParams.get("page") || 1;
@@ -22,9 +20,8 @@ const GameList = () => {
     const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
     const getGames = async () => {
       try {
-        const res = await getAllGames(endpoint);
+        const res = await getExclusiveGames(endpoint);
         setData(res.data);
-        setMeta(res.meta);
       } catch (error) {
         console.log(error);
       }
@@ -44,10 +41,10 @@ const GameList = () => {
       filterBy: [],
     },
     saveData: true,
-    pagination: true,
+    pagination: false,
     sort: false,
     settings: {
-      title: "allGames",
+      title: "exclusiveGames",
       active: true,
     },
     create: {
@@ -55,7 +52,7 @@ const GameList = () => {
       link: "",
     },
     actions: {
-      active: true,
+      active: false,
       actions: [
         {
           name: "addToFav",
@@ -63,16 +60,16 @@ const GameList = () => {
           link: "",
           key: "id",
           icon: <MdLockOutline />,
-          component: AddToFav,
+          component: "",
         },
       ],
     },
   };
   return (
     <div>
-      <Table options={tableOptions} metaData={meta} data={data} />
+      <Table options={tableOptions} data={data} />
     </div>
   );
 };
 
-export default GameList;
+export default ExclusiveGameList;

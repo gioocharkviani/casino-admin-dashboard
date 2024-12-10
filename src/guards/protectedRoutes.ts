@@ -27,4 +27,12 @@ export const routes = [
     route: "/games",
     access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
   },
+  {
+    route: "/exclusive-games",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/providers",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
 ];

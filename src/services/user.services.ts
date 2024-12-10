@@ -9,7 +9,7 @@ const backendNetsUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
 // GET ALL USER
 export const getAllUser = async (endpoint: String) => {
   const token = await handleGetAuthCookie();
-  const apiUrl = `${backendUrl}/admin/users/${endpoint}`;
+  const apiUrl = `${backendUrl}/admin/users${endpoint}`;
   try {
     const response = await api({
       url: apiUrl,
@@ -44,10 +44,10 @@ export const getUserLevel = async (endpoint: String) => {
     });
 
     if (response.statusCode !== 200) {
-      return { error: response.errorText }; // Handle error case
+      return { error: response.errorText };
     }
 
-    return response.data; // Assuming you return data from the API
+    return response.data;
   } catch (error) {
     console.error(error);
     return { error: "Failed to fetch users" };
@@ -138,7 +138,6 @@ export const currentUser = async (token: string) => {
       },
     });
 
-    // Check for different response status codes
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return {
         statusCode: response.statusCode,
@@ -155,8 +154,6 @@ export const currentUser = async (token: string) => {
     }
   } catch (error: any) {
     console.error("Error fetching current user:", error.message || error);
-
-    // Handle any errors during the API call
     return {
       statusCode: error.response?.status || 500,
       message: error.response?.data?.message || "Internal server error",
@@ -180,7 +177,6 @@ export const deactiveUser = async ({ data }: any) => {
 
     return response;
   } catch (error: any) {
-    // Handle error and display appropriate feedback
     console.error("Error deactivating user:", error.message);
     throw new Error(error.message || "An unexpected error occurred");
   }

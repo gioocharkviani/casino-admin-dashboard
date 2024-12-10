@@ -43,6 +43,19 @@ export const data = [
     text: "games",
     link: "/games",
     icon: SlGameController,
-    dropdown: [],
+    dropdown: [
+      {
+        text: "game list",
+        link: "/games",
+      },
+      {
+        text: "exclusive-games",
+        link: "/exclusive-games",
+      },
+      {
+        text: "providers",
+        link: "/providers",
+      },
+    ],
   },
 ];

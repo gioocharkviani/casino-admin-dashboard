@@ -11,6 +11,7 @@ import { Input, Button, Link1, Checkbox, Checkbox1 } from "../ui";
 import { BsThreeDots } from "react-icons/bs";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import Image from "next/image";
+import { object } from "zod";
 
 interface TableProps {
   options: TableOptions;
@@ -248,7 +249,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 300);
+    }, 100);
     return () => clearTimeout(handler);
   }, [search]);
 
@@ -306,6 +307,27 @@ const Table = ({ options, data, metaData }: TableProps) => {
     router.push(`${pathname}?${newQueryString}`);
   };
   //PAGINATION SORT FILTER SELECT QUERY ALL PARAMS
+
+  //IF DATA CONTAINS OBJECT
+  const ifIsObj = ({ data, colName }: { data: object; colName: string }) => {
+    if (typeof data === "object" && data !== null) {
+      const content = Object.entries(data).map(([key, value], index) => (
+        <div key={index} className="flex gap-2">
+          <strong>{key}</strong>
+          <span>:</span>
+          <span>{value}</span>
+        </div>
+      ));
+
+      const child = <div>{content}</div>;
+      setTitle(colName || "");
+      setChildren(child);
+      setOpen();
+    } else {
+      console.error("The provided data is not an object.");
+    }
+  };
+  //IF DATA CONTAINS OBJECT
 
   return (
     <div>
@@ -426,10 +448,10 @@ const Table = ({ options, data, metaData }: TableProps) => {
                     {options.image?.active && (
                       <td>
                         <Image
-                          src={`${row.img}`}
+                          src={row[options.image.imageDataKey]}
                           width={100}
                           height={50}
-                          alt="123"
+                          alt="null"
                           className="w-24 h-10 bg-gray-300 rounded-md overflow-hidden"
                         />
                       </td>
@@ -444,7 +466,18 @@ const Table = ({ options, data, metaData }: TableProps) => {
                         ) : row[col] === null ? (
                           "null"
                         ) : typeof row[col] === "object" ? (
-                          <div>test</div>
+                          Object.keys(row[col]).length === 0 ? (
+                            "none"
+                          ) : Object.keys(row[col]).length === 1 ? (
+                            row[col][Object.keys(row[col])[0]]
+                          ) : (
+                            <button
+                              className="border shadow-md text-sm px-4 py-[2px] rounded-md dark:border-black"
+                              onClick={() => ifIsObj({ data: row[col], colName: col })}
+                            >
+                              {row[col].id}
+                            </button>
+                          )
                         ) : (
                           highlightText(row[col].toString(), search)
                         )}

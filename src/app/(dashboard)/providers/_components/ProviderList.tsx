@@ -1,43 +1,31 @@
 "use client";
 import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
-import { getAllGames } from "@/services";
+import { getAllProviders } from "@/services";
 import React, { useEffect, useState } from "react";
 import { MdLockOutline } from "react-icons/md";
-import AddToFav from "./AddToFav";
-import { useSearchParams } from "next/navigation";
 
-const GameList = () => {
+const ProviderList = () => {
   const [data, setData] = useState([]);
-  const [meta, setMeta] = useState();
-  const searchParams = useSearchParams();
-  //query params
-  const page = searchParams.get("page") || 1;
-  const search = searchParams.get("search") || "";
-  const perPage = searchParams.get("per_page") || 10;
-  const sortBy = searchParams.get("sort_by") || "";
-  const sortDirection = searchParams.get("sort_direction") || "";
 
   useEffect(() => {
-    const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
     const getGames = async () => {
       try {
-        const res = await getAllGames(endpoint);
+        const res = await getAllProviders();
         setData(res.data);
-        setMeta(res.meta);
       } catch (error) {
         console.log(error);
       }
     };
     getGames();
-  }, [searchParams]);
+  }, []);
 
   const tableOptions: TableOptions = {
     search: false,
     select: true,
     image: {
       active: true,
-      imageDataKey: "img",
+      imageDataKey: "logo",
     },
     filter: {
       active: false,
@@ -47,7 +35,7 @@ const GameList = () => {
     pagination: true,
     sort: false,
     settings: {
-      title: "allGames",
+      title: "getAllProviders",
       active: true,
     },
     create: {
@@ -55,7 +43,7 @@ const GameList = () => {
       link: "",
     },
     actions: {
-      active: true,
+      active: false,
       actions: [
         {
           name: "addToFav",
@@ -63,16 +51,16 @@ const GameList = () => {
           link: "",
           key: "id",
           icon: <MdLockOutline />,
-          component: AddToFav,
+          component: "",
         },
       ],
     },
   };
   return (
     <div>
-      <Table options={tableOptions} metaData={meta} data={data} />
+      <Table options={tableOptions} data={data} />
     </div>
   );
 };
 
-export default GameList;
+export default ProviderList;

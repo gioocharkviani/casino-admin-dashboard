@@ -4,6 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         hostname: "stage.nuxgame.com",
+        hostname: "fungamess.games",
       },
     ],
   },
