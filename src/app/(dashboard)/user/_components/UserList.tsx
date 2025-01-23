@@ -36,7 +36,7 @@ const UserList = () => {
       }
     };
     fetchFunc();
-  }, [searchParams]);
+  }, [page, search, perPage, sortBy, sortDirection]);
 
   const tableOptions: TableOptions = {
     uniqueKey: "id",

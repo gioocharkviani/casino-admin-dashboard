@@ -1,12 +1,12 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
-import { LiaSignOutAltSolid, LiaUserCircleSolid } from 'react-icons/lia'; // Use user icon
-import { handleDeleteAuthCookie } from '@/utils/token';
-import { useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
-import useUserStore from '@/store/useUserStore';
-import { currentUser } from '@/services';
-import { handleGetAuthCookie } from '@/utils/cookies';
+"use client";
+import { useState, useEffect, useRef } from "react";
+import { LiaSignOutAltSolid, LiaUserCircleSolid } from "react-icons/lia"; // Use user icon
+import { handleDeleteAuthCookie } from "@/utils/token";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import useUserStore from "@/store/useUserStore";
+import { currentUser } from "@/services";
+import { handleGetAuthCookie } from "@/utils/cookies";
 
 const User = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,11 +26,11 @@ const User = () => {
       }
     };
     getUser();
-  }, []);
+  }, [setUser]);
 
   const signOut = () => {
     handleDeleteAuthCookie();
-    router.push('/signin');
+    router.push("/signin");
   };
 
   const toggleDropdown = () => {
@@ -40,17 +40,14 @@ const User = () => {
   // Handle outside clicks
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false); // Close dropdown if clicked outside
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
 
@@ -72,7 +69,7 @@ const User = () => {
       {isOpen && (
         <div
           className={`absolute right-0 mt-4 min-w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 transition-transform transform origin-top-right duration-300 ${
-            isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+            isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
         >
           {/* Logout button */}

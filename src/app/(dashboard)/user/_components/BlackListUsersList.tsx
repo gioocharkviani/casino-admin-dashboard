@@ -31,7 +31,7 @@ const BlackListUsers = () => {
       }
     };
     fetchFunc();
-  }, [searchParams]);
+  }, [page, search, perPage, sortBy, sortDirection]);
 
   const tableOptions: TableOptions = {
     uniqueKey: "id",

@@ -27,7 +27,7 @@ const ExclusiveGameList = () => {
       }
     };
     getGames();
-  }, [searchParams]);
+  }, [page, search, perPage, sortBy, sortDirection]);
 
   const tableOptions: TableOptions = {
     search: false,

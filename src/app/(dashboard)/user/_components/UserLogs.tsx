@@ -30,7 +30,7 @@ const UserLogs = () => {
       }
     };
     fetchFunc();
-  }, [searchParams]);
+  }, [searchParams, params.id]);
 
   const tableOptions = {
     search: true,

@@ -87,7 +87,7 @@ const CreateNotifi = () => {
   useEffect(() => {
     const modifiedSelectedItem = selectedItem.map(i => i.id);
     setValue("recipientIds", modifiedSelectedItem);
-  }, [selectedItem]);
+  }, [selectedItem, setValue]);
 
   // Fetch user data
   const [userList, setUserList] = useState([]);

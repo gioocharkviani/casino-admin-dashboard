@@ -103,7 +103,7 @@ const Selector = <T,>({ data, displayKey, uniqueKey, error }: SelectorProps<T>) 
         <div className="bg-white dark:bg-darkBg overflow-y-auto max-h-[300px] h-full rounded-md shadow-lg p-2 w-full">
           <ul className="flex flex-col gap-2">
             {searchQuery && filteredData.length === 0 ? (
-              <li className="text-center text-gray-500">No results found for "{searchQuery}".</li>
+              <li className="text-center text-gray-500">No results found for {searchQuery}.</li>
             ) : mappedData.length > 0 ? (
               mappedData.map((i: any) => (
                 <li

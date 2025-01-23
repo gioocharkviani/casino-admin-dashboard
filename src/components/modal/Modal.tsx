@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { IoClose } from "react-icons/io5";
 import useModalStore from "@/store/useModalStore";
 
@@ -8,18 +8,21 @@ const Modal = () => {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   // Close modal and clean up state
-  const closeModal = () => {
+
+  const closeModal = useCallback(() => {
     setChildren(null);
     setClose();
-    document.body.classList.remove("overflow-hidden"); // Enable scroll on main page
-  };
+    document.body.classList.remove("overflow-hidden");
+  }, [setClose, setChildren]);
 
-  // Close modal when clicking outside
-  const handleClickOutside = (event: MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      closeModal();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        closeModal();
+      }
+    },
+    [closeModal],
+  );
 
   // Add/remove event listener for clicking outside and handle scroll lock
   useEffect(() => {
@@ -31,7 +34,7 @@ const Modal = () => {
         document.body.classList.remove("overflow-hidden"); // Ensure scroll is enabled when modal closes
       };
     }
-  }, [isOpen]);
+  }, [isOpen, handleClickOutside]);
 
   // Don't render modal if it's not open
   if (!isOpen) return null;

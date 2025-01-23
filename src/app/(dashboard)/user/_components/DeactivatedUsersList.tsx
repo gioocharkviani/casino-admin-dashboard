@@ -33,7 +33,7 @@ const DeactivatedUserList = () => {
       }
     };
     fetchFunc();
-  }, [searchParams, refetch]);
+  }, [page, search, perPage, sortBy, sortDirection, refetch]);
 
   const tableOptions: TableOptions = {
     uniqueKey: "id",

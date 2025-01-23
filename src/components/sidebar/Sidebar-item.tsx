@@ -8,9 +8,14 @@ import { useEffect, useState } from "react";
 
 export default function SidebarItem({ data, isOpen }: any) {
   const [isDrop, setIsDrop] = useState(false);
+
+  // Extract the computed value to a variable
+  const isClosed = !isOpen;
+
   useEffect(() => {
     setIsDrop(false);
-  }, [!isOpen]);
+  }, [isClosed]); // Use the variable here
+
   const IconComponent = data.icon;
 
   return (

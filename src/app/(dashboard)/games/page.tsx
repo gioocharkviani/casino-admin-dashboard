@@ -1,10 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 import GameList from "./components/GameList";
+import TableLoader from "@/components/loaders/tableLoader";
 
 const page = async () => {
   return (
     <div className="bg-white dark:bg-darkBlue p-2 rounded-lg shadow-lg">
-      <GameList />
+      <Suspense fallback={<TableLoader />}>
+        <GameList />
+      </Suspense>
     </div>
   );
 };

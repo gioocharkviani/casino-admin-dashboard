@@ -1,17 +1,17 @@
-'use client';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import Select from '@/components/ui/Select';
-import Textarea from '@/components/ui/Textarea';
-import React, { useEffect, useState } from 'react';
-import { FaEye } from 'react-icons/fa';
-import useModalStore from '@/store/useModalStore';
-import useSelectorStore from '@/store/useSelectorStore';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { handleGetAuthCookie } from '@/utils/cookies';
-import { api } from '@/config';
-import { toast } from 'react-toastify';
-import { useSearchParams } from 'next/navigation';
+"use client";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Textarea from "@/components/ui/Textarea";
+import React, { useEffect, useState } from "react";
+import { FaEye } from "react-icons/fa";
+import useModalStore from "@/store/useModalStore";
+import useSelectorStore from "@/store/useSelectorStore";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { handleGetAuthCookie } from "@/utils/cookies";
+import { api } from "@/config";
+import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
 
 type Inputs = {
   title: string;
@@ -25,8 +25,7 @@ const EditNotifi = () => {
   const searchparams = useSearchParams();
 
   const { setOpen, setChildren, setTitle } = useModalStore();
-  const { selectedItem, addSelectedItem, resetSelectedItems } =
-    useSelectorStore();
+  const { selectedItem, addSelectedItem, resetSelectedItems } = useSelectorStore();
   const {
     handleSubmit,
     control,
@@ -35,11 +34,11 @@ const EditNotifi = () => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      title: '',
+      title: "",
       recipientIds: [],
-      content: '',
+      content: "",
       trigerAt: null,
-      category: '',
+      category: "",
     },
   });
 
@@ -47,7 +46,7 @@ const EditNotifi = () => {
   const notificationPreview = (data: any) => {
     const htmlContent = data;
     setChildren(<div dangerouslySetInnerHTML={{ __html: htmlContent }} />);
-    setTitle('Notification preview');
+    setTitle("Notification preview");
     setOpen();
   };
 
@@ -56,62 +55,62 @@ const EditNotifi = () => {
     const editData = async () => {
       try {
         const token = await handleGetAuthCookie();
-        const notifyId = searchparams.get('id');
+        const notifyId = searchparams.get("id");
         const response = await api({
           url: `${backendUrl}/notification/${notifyId}`,
-          method: 'GET',
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setValue('title', response.data.title);
-        setValue('category', response.data?.category);
-        setValue('content', response.data?.content);
-        setValue('recipientIds', response.data?.recipientId);
-        setValue('trigerAt', response.data?.trigerAt);
+        setValue("title", response.data.title);
+        setValue("category", response.data?.category);
+        setValue("content", response.data?.content);
+        setValue("recipientIds", response.data?.recipientId);
+        setValue("trigerAt", response.data?.trigerAt);
       } catch (error) {}
     };
     editData();
-  }, []);
+  }, [setValue, searchparams]);
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async data => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_NEST_API_URL;
     const token = await handleGetAuthCookie();
-    const notifyId = searchparams.get('id');
+    const notifyId = searchparams.get("id");
     toast.promise(
       (async () => {
         const response = await api({
           url: `${backendUrl}/notification/${notifyId}`,
-          method: 'PATCH',
+          method: "PATCH",
           body: data,
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (response.statusCode === 200) {
-          return 'Notification edit successfully!';
+          return "Notification edit successfully!";
         } else {
           throw new Error(response.message);
         }
       })(),
       {
-        pending: 'editing notification...',
-        success: 'Notification edit successfully! 👌',
-        error: 'Failed to edit notification. 🤯',
-      }
+        pending: "editing notification...",
+        success: "Notification edit successfully! 👌",
+        error: "Failed to edit notification. 🤯",
+      },
     );
   };
 
   const formatDateTimeLocal = (date: string | null) => {
-    if (!date) return '';
+    if (!date) return "";
     const dt = new Date(date);
     return dt.toISOString().slice(0, 16);
   };
 
   // Dropdown options
   const options = [
-    { value: 'NOTIFI', label: 'Notifi' },
-    { value: 'POPUP', label: 'Popup' },
+    { value: "NOTIFI", label: "Notifi" },
+    { value: "POPUP", label: "Popup" },
   ];
 
   return (
@@ -127,8 +126,8 @@ const EditNotifi = () => {
                 label="title"
                 type="text"
                 {...field}
-                value={field.value || ''}
-                onChange={(e) => field.onChange(e.target.value || null)}
+                value={field.value || ""}
+                onChange={e => field.onChange(e.target.value || null)}
               />
             )}
           />
@@ -137,7 +136,7 @@ const EditNotifi = () => {
           <Controller
             name="category"
             control={control}
-            rules={{ required: 'Category is required' }}
+            rules={{ required: "Category is required" }}
             render={({ field }) => (
               <Select
                 label="Select an Option"
@@ -146,7 +145,7 @@ const EditNotifi = () => {
                 defaultValue={field.value}
                 placeholder="Select an option"
                 error={errors.category?.message}
-                onChange={(value) => field.onChange(value)}
+                onChange={value => field.onChange(value)}
               />
             )}
           />
@@ -157,13 +156,9 @@ const EditNotifi = () => {
           <Controller
             name="content"
             control={control}
-            rules={{ required: 'Content is required' }}
+            rules={{ required: "Content is required" }}
             render={({ field }) => (
-              <Textarea
-                error={errors.content?.message}
-                label="Content"
-                {...field}
-              />
+              <Textarea error={errors.content?.message} label="Content" {...field} />
             )}
           />
         </div>
@@ -174,11 +169,7 @@ const EditNotifi = () => {
             control={control}
             name="content"
             render={({ field }) => (
-              <Button
-                icon={FaEye}
-                type="button"
-                onClick={() => notificationPreview(field.value)}
-              >
+              <Button icon={FaEye} type="button" onClick={() => notificationPreview(field.value)}>
                 Preview
               </Button>
             )}
@@ -196,8 +187,8 @@ const EditNotifi = () => {
                 label="Trigger Date"
                 type="datetime-local"
                 {...field}
-                value={field.value ? formatDateTimeLocal(field.value) : ''}
-                onChange={(e) => field.onChange(e.target.value || null)}
+                value={field.value ? formatDateTimeLocal(field.value) : ""}
+                onChange={e => field.onChange(e.target.value || null)}
               />
             )}
           />
