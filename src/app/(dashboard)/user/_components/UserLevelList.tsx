@@ -36,7 +36,7 @@ const UserLevelList = () => {
   const tableOptions: TableOptions = {
     uniqueKey: "id",
     search: true,
-    select: true,
+    select: false,
     image: {
       active: false,
       imageDataKey: "img",

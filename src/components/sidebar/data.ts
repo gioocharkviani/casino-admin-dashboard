@@ -56,6 +56,10 @@ export const data = [
         text: "providers",
         link: "/providers",
       },
+      {
+        text: "dashboard-Games",
+        link: "/dashboard-games",
+      },
     ],
   },
 ];

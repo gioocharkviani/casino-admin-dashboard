@@ -2,15 +2,18 @@
 import { useEffect, useState } from "react";
 import { getAllUser } from "@/services";
 import DeactiveUserComp from "./DeactiveUserComp";
-import { LuUserCircle } from "react-icons/lu";
-import { MdLockOutline } from "react-icons/md";
 import BlackListAddComp from "./BlackListAddComp";
-import { FaUserLock } from "react-icons/fa";
-import { IoSettingsOutline } from "react-icons/io5";
 import GeneralSettings from "./GeneralSettings";
 import { useSearchParams } from "next/navigation";
 import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
+import AssignLvlComp from "./AssignLvlComp";
+
+import { SiLevelsdotfyi } from "react-icons/si";
+import { LuUserCircle } from "react-icons/lu";
+import { MdLockOutline } from "react-icons/md";
+import { FaUserLock } from "react-icons/fa";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const UserList = () => {
   const searchParams = useSearchParams();
@@ -86,6 +89,14 @@ const UserList = () => {
           key: "id",
           icon: <FaUserLock />,
           component: BlackListAddComp,
+        },
+        {
+          name: "assign level",
+          type: "MODAL",
+          link: "",
+          key: "id",
+          icon: <SiLevelsdotfyi />,
+          component: AssignLvlComp,
         },
         {
           name: "General",

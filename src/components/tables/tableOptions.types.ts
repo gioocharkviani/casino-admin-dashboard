@@ -31,6 +31,7 @@ export interface Actions {
 
 export interface Image {
   active: boolean;
+  inObjectKey?: string;
   imageDataKey: string;
 }
 

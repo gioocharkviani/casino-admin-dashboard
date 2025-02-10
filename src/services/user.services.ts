@@ -31,9 +31,29 @@ export const getAllUser = async (endpoint: String) => {
 };
 
 // GET ALL USER
-export const getUserLevel = async (endpoint: String) => {
+
+export const assignLevel = async (endpoint: String) => {
   const token = await handleGetAuthCookie();
-  const apiUrl = `${backendUrl}/admin/level/${endpoint}`;
+
+  const apiUrl = `${backendUrl}${endpoint}`;
+  try {
+    const res = await fetch(`${apiUrl}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to assign lvl" };
+  }
+};
+
+export const getUserLevel = async (endpoint?: String) => {
+  const token = await handleGetAuthCookie();
+  const apiUrl = `${backendUrl}/admin/levels/${endpoint}`;
   try {
     const response = await api({
       url: apiUrl,

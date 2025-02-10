@@ -4,9 +4,11 @@ import React from "react";
 import useModalStore from "@/store/useModalStore";
 import { toast } from "react-toastify";
 import { removeNotificatiopn } from "@/services";
+import useRefetchStore from "@/store/useRefetchStore";
 
 const DeleteNotifi = ({ id }: any) => {
   const { setClose } = useModalStore();
+  const { setRefetch } = useRefetchStore(state => state);
 
   const onSubmit = async () => {
     toast.promise(
@@ -15,6 +17,7 @@ const DeleteNotifi = ({ id }: any) => {
           console.log(res);
           if (res.statusText === "OK") {
             setClose();
+            setRefetch();
           } else {
             const resJson = await res.json();
             throw new Error(resJson);

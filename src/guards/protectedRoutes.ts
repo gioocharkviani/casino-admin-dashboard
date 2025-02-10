@@ -35,4 +35,8 @@ export const routes = [
     route: "/providers",
     access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
   },
+  {
+    route: "/dashboard-games",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
 ];

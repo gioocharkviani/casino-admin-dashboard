@@ -312,14 +312,17 @@ const Table = ({ options, data, metaData }: TableProps) => {
   const ifIsObj = ({ data, colName }: { data: object; colName: string }) => {
     if (typeof data === "object" && data !== null) {
       const content = Object.entries(data).map(([key, value], index) => (
-        <div key={index} className="flex gap-2">
-          <strong>{key}</strong>
-          <span>:</span>
-          <span>{value}</span>
+        <div
+          key={index}
+          className="flex items-center gap-3 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg shadow-sm"
+        >
+          <strong className="text-gray-700 dark:text-gray-300 font-medium">{key}</strong>
+          <span className="text-gray-500 dark:text-gray-400">:</span>
+          <span className="text-gray-900 dark:text-gray-100">{String(value)}</span>
         </div>
       ));
 
-      const child = <div>{content}</div>;
+      const child = <div className="space-y-2 p-4 flex flex-col gap-1">{content}</div>;
       setTitle(colName || "");
       setChildren(child);
       setOpen();
@@ -327,6 +330,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
       console.error("The provided data is not an object.");
     }
   };
+
   //IF DATA CONTAINS OBJECT
 
   return (
@@ -430,118 +434,127 @@ const Table = ({ options, data, metaData }: TableProps) => {
               {/* END TABLE HEAD */}
 
               <tbody>
-                {rowsData.map((row: any) => (
-                  <tr key={row.id} className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}>
-                    {/* CHECKBOX FOR SELECT EACH ROW */}
-                    {options.select && (
-                      <td>
-                        <Checkbox
-                          id={`row-select-${row.id}`}
-                          checked={selectedRows.includes(row.id)}
-                          onChange={() => handleRowSelect(row.id)} // Use correct handler
-                        />
-                      </td>
-                    )}
-                    {/* END CHECKBOX FOR SELECT EACH ROW */}
+                {rowsData.map((row: any) => {
+                  return (
+                    <tr
+                      key={row.id ? row.id : Math.random()}
+                      className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}
+                    >
+                      {/* CHECKBOX FOR SELECT EACH ROW */}
+                      {options.select && (
+                        <td>
+                          <Checkbox
+                            id={`row-select-${row.id}`}
+                            checked={selectedRows.includes(row.id)}
+                            onChange={() => handleRowSelect(row.id)} // Use correct handler
+                          />
+                        </td>
+                      )}
+                      {/* END CHECKBOX FOR SELECT EACH ROW */}
 
-                    {/*RENDER IMAGE*/}
-                    {options.image?.active && (
-                      <td>
-                        <Image
-                          src={row[options.image.imageDataKey]}
-                          width={100}
-                          height={50}
-                          alt="null"
-                          className="w-24 h-10 bg-gray-300 rounded-md overflow-hidden"
-                        />
-                      </td>
-                    )}
-                    {/*RENDER IMAGE*/}
+                      {/*RENDER IMAGE*/}
+                      {options.image?.active && (
+                        <td>
+                          <Image
+                            src={
+                              options.image.inObjectKey
+                                ? row[options.image.inObjectKey][options.image.imageDataKey]
+                                : row[options.image.imageDataKey]
+                            }
+                            width={100}
+                            height={50}
+                            alt="null"
+                            className="w-24 h-10 bg-gray-300 rounded-md overflow-hidden"
+                          />
+                        </td>
+                      )}
+                      {/*RENDER IMAGE*/}
 
-                    {/* MAP ROW DATA */}
-                    {colMap.map((col: string) => (
-                      <td className="text-sm" key={col}>
-                        {row[col] === undefined ? (
-                          "undefined"
-                        ) : row[col] === null ? (
-                          "null"
-                        ) : typeof row[col] === "object" ? (
-                          Object.keys(row[col]).length === 0 ? (
-                            "none"
-                          ) : Object.keys(row[col]).length === 1 ? (
-                            row[col][Object.keys(row[col])[0]]
-                          ) : (
-                            <button
-                              className="border shadow-md text-sm px-4 py-[2px] rounded-md dark:border-black"
-                              onClick={() => ifIsObj({ data: row[col], colName: col })}
-                            >
-                              {row[col].id}
-                            </button>
-                          )
-                        ) : (
-                          highlightText(row[col].toString(), search)
-                        )}
-                      </td>
-                    ))}
-                    {/* MAP ROW DATA */}
-
-                    {/* ACTIONS */}
-                    {options.actions.active && (
-                      <td>
-                        <div className="w-full flex gap-2 justify-end items-center h-full">
-                          <div className="relative">
-                            <BsThreeDots
-                              className=" cursor-pointer"
-                              onClick={() => showAction(row.id)}
-                            />
-                            {actionMenu === row.id && (
-                              <div
-                                className={`${
-                                  actionMenu === row.id ? "opacity-1" : "opacity-0"
-                                } absolute right-0 rounded-md p-1 bg-white shadow-lg min-w-[100px] dark:bg-darkBlue border transition-all dark:border-darkBg top-[100%] z-[99]`}
+                      {/* MAP ROW DATA */}
+                      {colMap.map((col: string) => (
+                        <td className="text-sm" key={col}>
+                          {row[col] === undefined ? (
+                            "undefined"
+                          ) : row[col] === null ? (
+                            "null"
+                          ) : typeof row[col] === "object" ? (
+                            Object.keys(row[col]).length === 0 ? (
+                              "none"
+                            ) : Object.keys(row[col]).length === 1 ? (
+                              row[col][Object.keys(row[col])[0]]
+                            ) : (
+                              <button
+                                className="border shadow-md text-sm px-4 py-[2px] rounded-md dark:border-black"
+                                onClick={() => ifIsObj({ data: row[col], colName: col })}
                               >
-                                <ul className="flex flex-col">
-                                  {options.actions.actions?.map(i => (
-                                    <li
-                                      key={i.name}
-                                      className="px-1 py-1 cursor-pointer text-sm capitalize hover:bg-[#d7d7d7] dark:hover:bg-darkHover rounded-md"
-                                    >
-                                      {i.type === "MODAL" && (
-                                        <button
-                                          onClick={() =>
-                                            actionBtn({
-                                              title: i.name,
-                                              Comp: i.component,
-                                              key: row[i.key],
-                                            })
-                                          }
-                                          className="capitalize flex items-center gap-2"
-                                        >
-                                          {i?.icon}
-                                          {i.name}
-                                        </button>
-                                      )}
-                                      {i?.type === "LINK" && (
-                                        <button
-                                          className="capitalize flex items-center gap-2"
-                                          onClick={() => actionLinkHendler(i.link, row[i.key])}
-                                        >
-                                          {i?.icon}
-                                          {i.name}
-                                        </button>
-                                      )}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                                {row[col].id}
+                              </button>
+                            )
+                          ) : (
+                            highlightText(row[col].toString(), search)
+                          )}
+                        </td>
+                      ))}
+                      {/* MAP ROW DATA */}
+
+                      {/* ACTIONS */}
+                      {options.actions.active && (
+                        <td>
+                          <div className="w-full flex gap-2 justify-end items-center h-full">
+                            <div className="relative">
+                              <BsThreeDots
+                                className=" cursor-pointer"
+                                onClick={() => showAction(row.id)}
+                              />
+                              {actionMenu === row.id && (
+                                <div
+                                  className={`${
+                                    actionMenu === row.id ? "opacity-1" : "opacity-0"
+                                  } absolute right-0 rounded-md p-1 bg-white shadow-lg min-w-[100px] dark:bg-darkBlue border transition-all dark:border-darkBg top-[100%] z-[99]`}
+                                >
+                                  <ul className="flex flex-col">
+                                    {options.actions.actions?.map(i => (
+                                      <li
+                                        key={i.name}
+                                        className="px-1 py-1 cursor-pointer text-sm capitalize hover:bg-[#d7d7d7] dark:hover:bg-darkHover rounded-md"
+                                      >
+                                        {i.type === "MODAL" && (
+                                          <button
+                                            onClick={() =>
+                                              actionBtn({
+                                                title: i.name,
+                                                Comp: i.component,
+                                                key: row[i.key],
+                                              })
+                                            }
+                                            className="capitalize flex items-center gap-2"
+                                          >
+                                            {i?.icon}
+                                            {i.name}
+                                          </button>
+                                        )}
+                                        {i?.type === "LINK" && (
+                                          <button
+                                            className="capitalize flex items-center gap-2"
+                                            onClick={() => actionLinkHendler(i.link, row[i.key])}
+                                          >
+                                            {i?.icon}
+                                            {i.name}
+                                          </button>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    )}
-                    {/* ACTIONS */}
-                  </tr>
-                ))}
+                        </td>
+                      )}
+                      {/* ACTIONS */}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

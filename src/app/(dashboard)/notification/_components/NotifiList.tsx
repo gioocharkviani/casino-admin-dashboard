@@ -6,12 +6,13 @@ import { FaRegEdit } from "react-icons/fa";
 import DeleteNotifi from "./DeleteNotifi";
 import Table from "@/components/tables/Table";
 import { useSearchParams } from "next/navigation";
-import { data } from "@/components/sidebar/data";
+import useRefetchStore from "@/store/useRefetchStore";
 
 const NotifiList = () => {
   const searchParams = useSearchParams();
   const [tableData, setTableData] = useState();
   const [meta, setMeta] = useState();
+  const { refetch } = useRefetchStore(state => state);
 
   //query params
   const page = searchParams.get("page") || 1;
@@ -38,7 +39,7 @@ const NotifiList = () => {
       }
     };
     fetchFunc();
-  }, [searchParams]);
+  }, [searchParams, refetch]);
 
   const tableOptions: any = {
     search: true,

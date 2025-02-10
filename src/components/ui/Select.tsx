@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { IoIosArrowForward } from 'react-icons/io';
+import React, { useState, useEffect } from "react";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface Option {
   label: string;
@@ -28,8 +28,8 @@ const Select = ({
   defaultValue,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<string | number>(defaultValue || ''); // Initialize with default value
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<string | number>(defaultValue || "");
 
   const handleSelect = (option: Option) => {
     setSelected(option.value);
@@ -37,21 +37,21 @@ const Select = ({
     setIsOpen(false);
   };
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(search.toLowerCase())
+  const filteredOptions = options.filter(option =>
+    option.label.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Reset logic: when resetSelect changes to true, clear the selection and search
   useEffect(() => {
     if (resetSelect) {
-      setSelected(defaultValue || ''); // Reset to default value
-      setSearch('');
+      setSelected(defaultValue || ""); // Reset to default value
+      setSearch("");
     }
   }, [resetSelect, defaultValue]);
 
   // Set selected value when defaultValue changes
   useEffect(() => {
-    setSelected(defaultValue || '');
+    setSelected(defaultValue || "");
   }, [defaultValue]);
 
   return (
@@ -61,7 +61,7 @@ const Select = ({
         <label
           htmlFor={name}
           className={`block text-sm font-medium mb-1 transition-all ${
-            error ? 'text-red-500' : 'text-gray-700 dark:text-[#e9e9e9]'
+            error ? "text-red-500" : "text-gray-700 dark:text-[#e9e9e9]"
           }`}
         >
           {label}
@@ -74,21 +74,17 @@ const Select = ({
           type="button"
           className={`w-full px-3 py-2 border rounded-md shadow-sm flex justify-between items-center text-left transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm ${
             error
-              ? 'border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500'
-              : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-700 dark:bg-transparent dark:text-white'
+              ? "border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500"
+              : "border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 dark:border-gray-700 dark:bg-transparent dark:text-white"
           }`}
           onClick={() => setIsOpen(!isOpen)}
         >
           <span>
             {selected
-              ? options.find((option) => option.value === selected)?.label
-              : placeholder || 'Select...'}
+              ? options.find(option => option.value === selected)?.label
+              : placeholder || "Select..."}
           </span>
-          <div
-            className={`ml-2 transform transition-transform ${
-              isOpen ? 'rotate-90' : ''
-            }`}
-          >
+          <div className={`ml-2 transform transition-transform ${isOpen ? "rotate-90" : ""}`}>
             <IoIosArrowForward />
           </div>
         </button>
@@ -109,11 +105,11 @@ const Select = ({
               placeholder="Search..."
               autoFocus
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
             />
             <ul className="py-1 text-sm text-gray-700 dark:text-[#e9e9e9]">
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option) => (
+                filteredOptions.map(option => (
                   <li
                     key={option.value}
                     className="cursor-pointer px-4 py-2 hover:bg-indigo-500 hover:text-white dark:hover:bg-gray-600"

@@ -1,5 +1,6 @@
 const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
 import { handleGetAuthCookie } from "@/utils/cookies";
+import { error } from "console";
 
 export const getAllGames = async (query?: String) => {
   try {
@@ -62,5 +63,18 @@ export const getAllProviders = async (query?: String | "") => {
   } catch (error: any) {
     console.error("Error:", error.message);
     throw new Error(error.message || "An unexpected error occurred");
+  }
+};
+
+//Get dashboard games
+export const getGamesForDashboartd = async () => {
+  try {
+    const res = await fetch(`${backendUrl}/games/categories`, {
+      method: "GET",
+    });
+
+    return res.json();
+  } catch (error: any) {
+    console.error(error.message || "An unexpected error occurred");
   }
 };
