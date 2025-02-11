@@ -1,11 +1,16 @@
 "use client";
 import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
+import { DashboardGames } from "@/types";
 import React from "react";
 
-const TopGamesList = (data: any) => {
+const TopGamesList = ({ data }: { data: DashboardGames }) => {
   const tableOptions: TableOptions = {
     search: false,
+    rowUniqueKey: {
+      key: "game",
+      value: "id",
+    },
     select: true,
     image: {
       active: true,
@@ -17,7 +22,7 @@ const TopGamesList = (data: any) => {
       filterBy: [],
     },
     saveData: true,
-    pagination: true,
+    pagination: false,
     sort: false,
     settings: {
       title: "TopGamesList",
@@ -29,13 +34,18 @@ const TopGamesList = (data: any) => {
     },
     actions: {
       active: true,
-      actions: [],
+      actions: [
+        {
+          name: "123",
+          key: "id",
+        },
+      ],
     },
   };
   return (
     <div className="w-full flex flex-col gap-2">
       <h2 className="m-[10px] text-lg font-bold">Top games</h2>
-      <Table data={data.data} options={tableOptions} />
+      <Table data={data} options={tableOptions} />
     </div>
   );
 };

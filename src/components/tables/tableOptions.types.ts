@@ -35,8 +35,14 @@ export interface Image {
   imageDataKey: string;
 }
 
+interface uniqueKey {
+  key: string;
+  value: string;
+}
+
 export interface TableOptions {
   image?: Image;
+  rowUniqueKey?: uniqueKey;
   search: boolean;
   select: boolean;
   filter: FilterOptions;

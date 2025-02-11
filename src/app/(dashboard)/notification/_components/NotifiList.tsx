@@ -7,6 +7,7 @@ import DeleteNotifi from "./DeleteNotifi";
 import Table from "@/components/tables/Table";
 import { useSearchParams } from "next/navigation";
 import useRefetchStore from "@/store/useRefetchStore";
+import { TableOptions } from "@/components/tables/tableOptions.types";
 
 const NotifiList = () => {
   const searchParams = useSearchParams();
@@ -41,8 +42,8 @@ const NotifiList = () => {
     fetchFunc();
   }, [searchParams, refetch]);
 
-  const tableOptions: any = {
-    search: true,
+  const tableOptions: TableOptions = {
+    search: false,
     select: true,
     filter: {
       active: false,
@@ -51,11 +52,6 @@ const NotifiList = () => {
     saveData: true,
     pagination: true,
     sort: true,
-    trclickaction: {
-      active: false,
-      link: "",
-      component: "",
-    },
     settings: {
       title: "notificationTable",
       active: true,

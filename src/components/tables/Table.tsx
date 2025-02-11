@@ -435,18 +435,19 @@ const Table = ({ options, data, metaData }: TableProps) => {
 
               <tbody>
                 {rowsData.map((row: any) => {
+                  const id =
+                    row.id ??
+                    (options.rowUniqueKey &&
+                      row[options.rowUniqueKey?.key]?.[options.rowUniqueKey?.value]);
                   return (
-                    <tr
-                      key={row.id ? row.id : Math.random()}
-                      className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}
-                    >
+                    <tr key={id} className={`hover:bg-[#f6f6f6] dark:hover:bg-darkBg `}>
                       {/* CHECKBOX FOR SELECT EACH ROW */}
                       {options.select && (
                         <td>
                           <Checkbox
-                            id={`row-select-${row.id}`}
-                            checked={selectedRows.includes(row.id)}
-                            onChange={() => handleRowSelect(row.id)} // Use correct handler
+                            id={`row-select-${id}`}
+                            checked={selectedRows.includes(id)}
+                            onChange={() => handleRowSelect(id)} // Use correct handler
                           />
                         </td>
                       )}
@@ -502,14 +503,11 @@ const Table = ({ options, data, metaData }: TableProps) => {
                         <td>
                           <div className="w-full flex gap-2 justify-end items-center h-full">
                             <div className="relative">
-                              <BsThreeDots
-                                className=" cursor-pointer"
-                                onClick={() => showAction(row.id)}
-                              />
-                              {actionMenu === row.id && (
+                              <BsThreeDots className=" cursor-pointer" onClick={() => showAction(id)} />
+                              {actionMenu === id && (
                                 <div
                                   className={`${
-                                    actionMenu === row.id ? "opacity-1" : "opacity-0"
+                                    actionMenu === id ? "opacity-1" : "opacity-0"
                                   } absolute right-0 rounded-md p-1 bg-white shadow-lg min-w-[100px] dark:bg-darkBlue border transition-all dark:border-darkBg top-[100%] z-[99]`}
                                 >
                                   <ul className="flex flex-col">
