@@ -1,6 +1,6 @@
 const backendUrl = process.env.NEXT_PUBLIC_BACKEDND_BASE_API_URL;
+import { createGamesByCategories, updateGameType } from "@/types";
 import { handleGetAuthCookie } from "@/utils/cookies";
-import { error } from "console";
 
 export const getAllGames = async (query?: String) => {
   try {
@@ -74,6 +74,59 @@ export const getGamesForDashboartd = async () => {
     });
 
     return res.json();
+  } catch (error: any) {
+    console.error(error.message || "An unexpected error occurred");
+  }
+};
+
+//Delete dashboard Game By Category id
+export const removeDashboardGame = async (id: string | number) => {
+  const token = await handleGetAuthCookie();
+  try {
+    const res = await fetch(`${backendUrl}/games/categories/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error: any) {
+    console.error(error.message || "An unexpected error occurred");
+  }
+};
+
+//add game by categories
+export const addGamesByCategories = async (data: createGamesByCategories) => {
+  const token = await handleGetAuthCookie();
+  try {
+    const res = await fetch(`${backendUrl}/games/categories/add`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
+  } catch (error: any) {
+    console.error(error.message || "An unexpected error occurred");
+  }
+};
+
+//update game by categories
+export const updateGamesByCategories = async (data: updateGameType) => {
+  const token = await handleGetAuthCookie();
+  try {
+    const res = await fetch(`${backendUrl}/games/categories/update`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res;
   } catch (error: any) {
     console.error(error.message || "An unexpected error occurred");
   }

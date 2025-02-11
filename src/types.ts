@@ -20,3 +20,12 @@ export interface DashboardGames {
   position: number;
   game: GameForCategoryGame;
 }
+
+export interface createGamesByCategories {
+  category_type: string | number;
+  game_id: string | number;
+}
+export interface updateGameType {
+  game_id: string | number;
+  new_category_type: string | number;
+}

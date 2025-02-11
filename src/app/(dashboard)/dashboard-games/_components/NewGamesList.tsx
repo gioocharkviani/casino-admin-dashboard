@@ -3,6 +3,12 @@ import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
 import { DashboardGames } from "@/types";
 import React from "react";
+import DeleteGame from "./DeleteGame";
+
+import { IoIosRemoveCircleOutline } from "react-icons/io";
+import { MdUpdate } from "react-icons/md";
+import AddGameComp from "./AddGame";
+import UpdateGame from "./EditGame";
 
 const NewGamesList = ({ data }: { data: DashboardGames }) => {
   const tableOptions: TableOptions = {
@@ -21,7 +27,7 @@ const NewGamesList = ({ data }: { data: DashboardGames }) => {
       active: false,
       filterBy: [],
     },
-    saveData: true,
+    saveData: false,
     pagination: false,
     sort: false,
     settings: {
@@ -29,19 +35,31 @@ const NewGamesList = ({ data }: { data: DashboardGames }) => {
       active: true,
     },
     create: {
-      active: false,
+      active: true,
       link: "",
+      type: "MODAL",
+      component: AddGameComp,
+      title: "ADD NEW GAME",
+      key: "new",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: "addToFav",
+          name: "Remove",
           type: "MODAL",
           link: "",
-          key: "id",
-          //   icon:
-          //   component: ,
+          key: "category_id",
+          icon: <IoIosRemoveCircleOutline />,
+          component: DeleteGame,
+        },
+        {
+          name: "Update",
+          type: "MODAL",
+          link: "",
+          key: "game",
+          icon: <MdUpdate />,
+          component: UpdateGame,
         },
       ],
     },

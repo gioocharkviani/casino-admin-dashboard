@@ -11,11 +11,15 @@ export interface Settings {
 export interface CreateAction {
   active: boolean;
   link: string;
+  type?: "MODAL" | "LINK";
+  component?: any;
+  title?: string;
+  key?: string;
 }
 
 export interface ActionsTypes {
   name?: string;
-  type?: "LINK" | "MODAL";
+  type?: "LINK" | "MODAL" | "";
   icon?: any | null;
   link?: any;
   component?: any;
@@ -25,8 +29,6 @@ export interface ActionsTypes {
 export interface Actions {
   active: boolean;
   actions?: ActionsTypes[];
-  edit?: string;
-  remove?: boolean;
 }
 
 export interface Image {

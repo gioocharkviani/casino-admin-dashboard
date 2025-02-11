@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Children, useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { IoIosSettings, IoMdAdd } from "react-icons/io";
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
@@ -274,7 +274,12 @@ const Table = ({ options, data, metaData }: TableProps) => {
     if (allSelected) {
       setSelectedRows([]);
     } else {
-      const allRowIds = rowsData.map((row: any) => row.id);
+      const allRowIds = rowsData.map((row: any) => {
+        const id =
+          row.id ??
+          (options.rowUniqueKey && row[options.rowUniqueKey?.key]?.[options.rowUniqueKey?.value]);
+        return id;
+      });
       setSelectedRows(allRowIds);
     }
     setAllSelected(!allSelected);
@@ -370,9 +375,22 @@ const Table = ({ options, data, metaData }: TableProps) => {
             {/* SAVE BUTTON */}
 
             {/* CREATE NEW */}
-            {options.create.active && (
-              <Link1 link={options.create.link} icon={IoMdAdd} style="green" title="CREATE" />
-            )}
+            {options.create?.active &&
+              (options.create.type === "LINK" ? (
+                <Link1 link={options.create.link} icon={IoMdAdd} style="green" title="CREATE" />
+              ) : options.create.type === "MODAL" && options.create.component ? (
+                <Button
+                  onClick={() =>
+                    actionBtn({
+                      title: options.create.title || "Create New",
+                      Comp: options.create.component,
+                      key: options.create.key,
+                    })
+                  }
+                >
+                  {options.create.title || "Create New"}
+                </Button>
+              ) : null)}
             {/* CREATE NEW */}
           </div>
         </div>

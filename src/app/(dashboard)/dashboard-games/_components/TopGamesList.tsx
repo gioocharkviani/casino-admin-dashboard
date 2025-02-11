@@ -1,10 +1,16 @@
-"use client";
 import Table from "@/components/tables/Table";
 import { TableOptions } from "@/components/tables/tableOptions.types";
 import { DashboardGames } from "@/types";
 import React from "react";
+import { IoIosRemoveCircleOutline } from "react-icons/io";
+import DeleteGame from "./DeleteGame";
+import AddGameComp from "./AddGame";
+import UpdateGame from "./EditGame";
+import { MdUpdate } from "react-icons/md";
 
 const TopGamesList = ({ data }: { data: DashboardGames }) => {
+  const someDiv = `HERE WILL BE TOP GAME ELEMENT`;
+
   const tableOptions: TableOptions = {
     search: false,
     rowUniqueKey: {
@@ -21,7 +27,7 @@ const TopGamesList = ({ data }: { data: DashboardGames }) => {
       active: false,
       filterBy: [],
     },
-    saveData: true,
+    saveData: false,
     pagination: false,
     sort: false,
     settings: {
@@ -29,15 +35,32 @@ const TopGamesList = ({ data }: { data: DashboardGames }) => {
       active: true,
     },
     create: {
-      active: false,
+      active: true,
       link: "",
+      type: "MODAL",
+      title: "ADD TOP GAME",
+      component: AddGameComp,
+      key: "top",
     },
     actions: {
       active: true,
       actions: [
         {
-          name: "123",
-          key: "id",
+          name: "Remove",
+          type: "MODAL",
+          link: "",
+          key: "category_id",
+
+          icon: <IoIosRemoveCircleOutline />,
+          component: DeleteGame,
+        },
+        {
+          name: "Update",
+          type: "MODAL",
+          link: "",
+          key: "game",
+          icon: <MdUpdate />,
+          component: UpdateGame,
         },
       ],
     },
