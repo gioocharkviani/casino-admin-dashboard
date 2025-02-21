@@ -1,5 +1,5 @@
 "use client";
-import React, { Children, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { IoIosSettings, IoMdAdd } from "react-icons/io";
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
@@ -159,14 +159,6 @@ const Table = ({ options, data, metaData }: TableProps) => {
   }, [tempVisibleColumns, tempPerPage, visibleColumns]);
 
   // SETTINGS
-
-  // FILTER
-  const filterModal = () => {
-    setOpen();
-    setTitle("Filter By");
-    setChildren(<div>filter function</div>);
-  };
-  // FILTER
 
   // SAVE DATA
   const saveAs = () => {
@@ -335,8 +327,37 @@ const Table = ({ options, data, metaData }: TableProps) => {
       console.error("The provided data is not an object.");
     }
   };
-
   //IF DATA CONTAINS OBJECT
+
+  //EXTRA OPTIONS SETTINGS
+  const colColor = (rowCol: string, colName?: string, id?: string | number) => {
+    const checkColor = options.extraOptions?.colColor?.col_dependency.find(
+      i => i.name === rowCol.toLowerCase(),
+    );
+    const openModal = () => {
+      setOpen();
+      setTitle(colName || "");
+      const Component = options.extraOptions?.colColor?.actionComponent;
+      setChildren(<Component id={id} />);
+    };
+    if (checkColor !== undefined || checkColor !== null) {
+      return (
+        <button
+          disabled={
+            options.extraOptions?.colColor?.actionComponent === null ||
+            options.extraOptions?.colColor?.actionComponent === undefined
+          }
+          onClick={() => openModal()}
+          style={{ backgroundColor: checkColor?.color, color: "white" }}
+          className="px-2 py-1 rounded-sm w-full text-start"
+        >
+          {rowCol}
+        </button>
+      );
+    }
+    return <span>{rowCol}</span>;
+  };
+  //EXTRA OPTIONS SETTINGS
 
   return (
     <div>
@@ -350,14 +371,6 @@ const Table = ({ options, data, metaData }: TableProps) => {
           </div>
           {/* SEARCH */}
           <div className="flex gap-2 justify-center">
-            {/* FILTER BUTTON */}
-            {options.filter.active && (
-              <Button onClick={() => filterModal()}>
-                <IoFilter />
-              </Button>
-            )}
-            {/* FILTER BUTTON */}
-
             {/* FILTER BUTTON */}
             {options.settings.active && (
               <Button onClick={() => setting()}>
@@ -509,6 +522,9 @@ const Table = ({ options, data, metaData }: TableProps) => {
                                 {row[col].id}
                               </button>
                             )
+                          ) : options.extraOptions?.colColor?.active &&
+                            col === options.extraOptions.colColor.col_key ? (
+                            colColor(row[col], col, row[options.uniqueKey || id])
                           ) : (
                             highlightText(row[col].toString(), search)
                           )}

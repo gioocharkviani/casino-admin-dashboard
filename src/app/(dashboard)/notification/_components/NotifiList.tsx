@@ -45,10 +45,6 @@ const NotifiList = () => {
   const tableOptions: TableOptions = {
     search: false,
     select: true,
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: true,
     sort: true,

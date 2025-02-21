@@ -27,10 +27,6 @@ const ProviderList = () => {
       active: true,
       imageDataKey: "logo",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: true,
     sort: false,

@@ -27,9 +27,9 @@ export async function middleware(request: NextRequest) {
       const user = await currentUser(token);
       if (user.statusCode !== 200) {
         const response = NextResponse.redirect(new URL("/signin", request.url));
-        console.log("1");
+        // console.log("1");
         response.cookies.getAll().forEach(i => response.cookies.delete(`${i.name}`));
-        return response;
+        // return response;
       }
 
       //ROLLED ACCESS ROUTES

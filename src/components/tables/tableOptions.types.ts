@@ -1,7 +1,4 @@
-export interface FilterOptions {
-  active: boolean;
-  filterBy: string[];
-}
+import { ReactElement } from "react";
 
 export interface Settings {
   title: string;
@@ -42,12 +39,27 @@ interface uniqueKey {
   value: string;
 }
 
+interface colorDependency {
+  id: string | number;
+  name: any;
+  color: any;
+}
+interface colColor {
+  col_key: string;
+  active: boolean;
+  actionComponent?: any | null;
+  col_dependency: colorDependency[];
+}
+
+interface extraOptions {
+  colColor?: colColor;
+}
+
 export interface TableOptions {
   image?: Image;
   rowUniqueKey?: uniqueKey;
   search: boolean;
   select: boolean;
-  filter: FilterOptions;
   saveData: boolean;
   pagination: boolean;
   sort: boolean;
@@ -55,4 +67,5 @@ export interface TableOptions {
   create: CreateAction;
   uniqueKey?: string;
   actions: Actions;
+  extraOptions?: extraOptions;
 }

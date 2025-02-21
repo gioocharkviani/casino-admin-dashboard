@@ -39,4 +39,20 @@ export const routes = [
     route: "/dashboard-games",
     access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
   },
+  {
+    route: "/themes/main-slider",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/transactions",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/transactions/deposit",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
+  {
+    route: "/transactions/withdrawal",
+    access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
+  },
 ];

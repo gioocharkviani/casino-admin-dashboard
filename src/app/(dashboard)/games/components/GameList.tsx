@@ -39,13 +39,9 @@ const GameList = () => {
       active: true,
       imageDataKey: "img",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: true,
-    sort: false,
+    sort: true,
     settings: {
       title: "allGames",
       active: true,

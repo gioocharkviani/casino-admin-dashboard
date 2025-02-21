@@ -23,10 +23,6 @@ const NewGamesList = ({ data }: { data: DashboardGames }) => {
       inObjectKey: "game",
       imageDataKey: "img",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: false,
     pagination: false,
     sort: false,

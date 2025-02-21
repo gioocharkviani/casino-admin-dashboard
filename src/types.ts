@@ -29,3 +29,15 @@ export interface updateGameType {
   game_id: string | number;
   new_category_type: string | number;
 }
+
+export interface transactionsTypes {
+  id: string | number;
+  amount: string | number;
+  user_id: string | number;
+  currency: string;
+  card_date: string;
+  update_at: string;
+  created_at: string;
+  type: string;
+  status: string;
+}

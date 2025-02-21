@@ -36,10 +36,6 @@ const ExclusiveGameList = () => {
       active: true,
       imageDataKey: "img",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: false,
     sort: false,

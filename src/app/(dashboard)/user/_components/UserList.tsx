@@ -49,10 +49,6 @@ const UserList = () => {
       active: false,
       imageDataKey: "img",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: true,
     sort: true,

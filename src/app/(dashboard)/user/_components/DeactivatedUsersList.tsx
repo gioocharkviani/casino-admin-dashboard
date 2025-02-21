@@ -43,10 +43,6 @@ const DeactivatedUserList = () => {
       active: false,
       imageDataKey: "img",
     },
-    filter: {
-      active: false,
-      filterBy: [],
-    },
     saveData: true,
     pagination: false,
     sort: true,
