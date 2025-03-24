@@ -45,7 +45,7 @@ const Modal = () => {
         ref={modalRef}
         className="bg-white dark:bg-darkBlue max-h-[100vh] h-max rounded-lg shadow-lg  max-w-[90vw] p-4 relative"
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center gap-5  mb-4">
           <h2 className="text-xl font-semibold">{title}</h2>
           <button
             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"

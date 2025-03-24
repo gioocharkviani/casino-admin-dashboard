@@ -51,6 +51,7 @@ const UserList = () => {
     },
     saveData: true,
     pagination: true,
+
     sort: true,
     settings: {
       title: "usersTable",

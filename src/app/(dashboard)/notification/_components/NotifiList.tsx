@@ -54,6 +54,7 @@ const NotifiList = () => {
     },
     create: {
       active: true,
+      type: "LINK",
       link: "/notification/create",
     },
     actions: {

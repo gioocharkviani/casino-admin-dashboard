@@ -41,3 +41,9 @@ export interface transactionsTypes {
   type: string;
   status: string;
 }
+
+export interface UpdateSwiper {
+  link: string;
+  img: string;
+  published: boolean;
+}

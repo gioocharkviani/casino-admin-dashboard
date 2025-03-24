@@ -40,7 +40,7 @@ export const routes = [
     access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
   },
   {
-    route: "/themes/main-slider",
+    route: "/main-slider",
     access: ["SUPER_ADMIN", "ADMIN", "SUPPORT"],
   },
   {

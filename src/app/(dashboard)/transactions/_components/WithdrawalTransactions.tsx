@@ -108,7 +108,7 @@ const WithdrawalTransactions = () => {
           onClick={() => handleFilterChange("")}
           className="px-2 py-1 rounded-md border border-black "
         >
-          Clear filter
+          clear filter
         </button>
       </div>
       <Table data={tableData} metaData={meta} options={tableOptions} />

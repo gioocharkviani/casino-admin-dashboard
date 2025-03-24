@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { act, useCallback, useEffect, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { IoIosSettings, IoMdAdd } from "react-icons/io";
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
@@ -210,7 +210,15 @@ const Table = ({ options, data, metaData }: TableProps) => {
     router.push(`${link}${id}`);
   };
 
-  const actionBtn = ({ title, Comp, key }: any) => {
+  const actionBtn = ({ title, Comp, key, actionData }: any) => {
+    setOpen();
+    setTitle(title);
+    const d = actionData?.find((i: any) => i.id === key);
+    const component = <Comp id={key} data={d || actionData} />;
+    setChildren(component);
+  };
+
+  const actionBtnC = ({ title, Comp, key }: any) => {
     setOpen();
     setTitle(title);
     const component = <Comp id={key} />;
@@ -394,7 +402,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
               ) : options.create.type === "MODAL" && options.create.component ? (
                 <Button
                   onClick={() =>
-                    actionBtn({
+                    actionBtnC({
                       title: options.create.title || "Create New",
                       Comp: options.create.component,
                       key: options.create.key,
@@ -519,7 +527,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
                                 className="border shadow-md text-sm px-4 py-[2px] rounded-md dark:border-black"
                                 onClick={() => ifIsObj({ data: row[col], colName: col })}
                               >
-                                {row[col].id}
+                                {row[col].id || row[col].name || Object.values(row[col])[0]}
                               </button>
                             )
                           ) : options.extraOptions?.colColor?.active &&
@@ -557,6 +565,7 @@ const Table = ({ options, data, metaData }: TableProps) => {
                                                 title: i.name,
                                                 Comp: i.component,
                                                 key: row[i.key],
+                                                ...(i.actionData && { actionData: i.actionData }),
                                               })
                                             }
                                             className="capitalize flex items-center gap-2"

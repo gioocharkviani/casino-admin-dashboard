@@ -90,7 +90,7 @@ export const data = [
     dropdown: [
       {
         text: "main slider",
-        link: "/themes/main-slider",
+        link: "/main-slider",
       },
     ],
   },

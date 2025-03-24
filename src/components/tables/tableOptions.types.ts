@@ -21,6 +21,7 @@ export interface ActionsTypes {
   link?: any;
   component?: any;
   key: string;
+  actionData?: any;
 }
 
 export interface Actions {

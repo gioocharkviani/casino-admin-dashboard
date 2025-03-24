@@ -3,8 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "stage.nuxgame.com",
-        hostname: "fungamess.games",
+        hostname: "**",
       },
     ],
   },
