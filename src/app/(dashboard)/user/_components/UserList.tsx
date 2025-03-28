@@ -17,7 +17,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 
 const UserList = () => {
   const searchParams = useSearchParams();
-  const [tableData, setTableData] = useState();
+  const [tableData, setTableData] = useState([]);
   const [meta, setMeta] = useState();
 
   //query params
@@ -32,7 +32,12 @@ const UserList = () => {
       const endpoint = `?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_direction=${sortDirection}&search=${search}`;
       try {
         const res = await getAllUser(endpoint);
-        setTableData(res.data);
+        const newData = res?.data.map((user: any) => {
+          const { freespins, ...userWithoutFreespins } = user;
+          return userWithoutFreespins;
+        });
+
+        setTableData(newData);
         setMeta(res.meta);
       } catch (error) {
         console.error(error);

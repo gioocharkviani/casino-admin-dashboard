@@ -14,6 +14,8 @@ export interface GameForCategoryGame {
   type: string;
   type_id: number;
 }
+{
+}
 
 export interface DashboardGames {
   category_id: number;
