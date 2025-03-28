@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import Provider from '@/providers/Provider';
+import type { Metadata } from "next";
+import "./globals.css";
+import Provider from "@/providers/Provider";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: 'CASINO ADMIN',
-  description: 'CASINO ADMIN',
+  title: "CASINO ADMIN",
+  description: "CASINO ADMIN",
 };
 
 export default function RootLayout({
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="max-w-screen">
-        <Provider>{children}</Provider>
+        <Provider>
+          <Suspense fallback>{children}</Suspense>
+        </Provider>
       </body>
     </html>
   );
